@@ -144,7 +144,7 @@ jobs:
           path: "**/*.class"
           key: ${{ runner.os }}-build-${{ github.sha }}
       - name: gradle integrationTest
-        run: gradle compileJava compileKotlin compileIntegrationTestJava compileIntegrationTestKotlin devp2p:integrationTest dist:integrationTest gossip:integrationTest plumtree-servlet:integrationTest plumtree-vertx:integrationTest rlpx:integrationTest
+        run: gradle compileJava compileKotlin compileIntegrationTestJava compileIntegrationTestKotlin devp2p:integrationTest dist:integrationTest
       - name: Archive Junit Report
         if: always()
         uses: actions/upload-artifact@v3

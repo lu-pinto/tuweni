@@ -113,7 +113,6 @@ distributions {
       }
 
       into('bin') {
-        from { project(':gossip').startScripts.outputs.files }
         from { project(':devp2p').startScripts.outputs.files }
         fileMode = 0755
       }
