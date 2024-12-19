@@ -109,7 +109,6 @@ distributions {
       }
       into('lib') {
         from rootProject.jar
-        from rootProject.signArchives.signatureFiles[0]
       }
 
       into('bin') {
@@ -197,6 +196,8 @@ sourcesDistTar { compression = Compression.GZIP }
 if (System.getenv('ENABLE_SIGNING') == 'true') {
   signing {
     useGpgCmd()
+    sign distributions.main.allArtifacts
+    sign distributions.sources.allArtifacts
     sign distZip
     sign distTar
     sign sourcesDistZip

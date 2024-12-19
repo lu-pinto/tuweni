@@ -174,7 +174,6 @@ subprojects {
 
 //////
 // Project defaults
-
 allprojects {
   apply plugin: 'java-library'
   apply plugin: 'kotlin'
@@ -305,17 +304,17 @@ allprojects {
 
   if (project.name != 'dist') {
 
-    artifacts {
+	artifacts {
       archives sourcesJar
       archives jar
     }
 
-    signing {
+	signing {
       useGpgCmd()
       sign configurations.archives
     }
 
-    publishing {
+	publishing {
       repositories {
         maven {
           name = "OSSRH"
@@ -361,24 +360,17 @@ allprojects {
           }
         }
       }
+
       publications {
         create("MavenDeployment", MavenPublication) {
           if (project != rootProject) {
             from components.java
             artifact sourcesJar { archiveClassifier.set('sources') }
           }
-          groupId 'io.consensys.protocols'
-          artifactId 'tuweni-' + project.name
-          version project.version
-
-          versionMapping {
-            usage('java-runtime'){
-              fromResolutionResult()
-            }
-            usage('java-api'){
-              fromResolutionResult()
-            }
-          }
+          
+          groupId = 'io.consensys.protocols'
+          artifactId = project == rootProject ? project.name : "${rootProject.name}-${project.name}"
+          version = project.version
 
           pom {
             name = project.name
@@ -407,81 +399,65 @@ allprojects {
               system = "github"
               url = "https://www.github.com/consensys/tuweni/issues"
             }
-          }
-
-          pom.withXml {
-            // use inline versions rather than pom dependency management
-            asNode().remove(asNode().dependencyManagement[0])
-            if (asNode().dependencies[0]) {
-              asNode().remove(asNode().dependencies[0])
-            }
-
-            def dependenciesNode = asNode().appendNode('dependencies')
-            def addDependencyNode = { dep, optional, scope ->
-              def dependencyNode = dependenciesNode.appendNode('dependency')
-              if (dep instanceof ProjectDependency) {
-                dependencyNode.appendNode('groupId', 'io.consensys')
-                dependencyNode.appendNode('artifactId', rootProject.name + '-' + dep.name)
-                dependencyNode.appendNode('version', dep.version)
-              } else {
-                dependencyNode.appendNode('groupId', dep.group)
-                dependencyNode.appendNode('artifactId', dep.name)
-                if (dep.version != null) {
-                  dependencyNode.appendNode('version', dep.version)
-                } else {
-                  def version = dependencyManagement.managedVersions["$dep.group:$dep.name"]
-                  dependencyNode.appendNode('version', version)
+          
+            withXml {
+              def root = asNode()
+              
+              // Remove dependencyManagement section if it exists
+              root.dependencyManagement.each { it.parent().remove(it) }
+              
+              def dependencies = root.dependencies[0] ?: root.appendNode('dependencies')
+              dependencies.children().clear()
+              
+              // Add implementation dependencies with versions from dependency management
+              configurations.implementation.allDependencies.each { dep ->
+                if (dep.name != 'unspecified') {
+                  def node = dependencies.appendNode('dependency')
+                  node.appendNode('groupId', dep instanceof ProjectDependency ? "io.consensys.protocols" : dep.group)
+                  node.appendNode('artifactId', dep instanceof ProjectDependency ? "${rootProject.name}-${dep.name}" : dep.name)
+                  
+                  // Get version from dependency management if available
+                  def version = dep.version ?: project.dependencyManagement.managedVersions["${dep.group}:${dep.name}"]
+                  node.appendNode('version', version)
                 }
               }
-              if (optional) {
-                dependencyNode.appendNode('optional', 'true')
-              }
-              if (scope != null) {
-                dependencyNode.appendNode('scope', scope)
-              }
-
-              def ers = dep.excludeRules
-              if (!ers.empty) {
-                def exclusionsNode = dependencyNode.appendNode('exclusions')
-                ers.each { er ->
-                  def exclusionNode = exclusionsNode.appendNode('exclusion')
-                  exclusionNode.appendNode('groupId', er.group)
-                  exclusionNode.appendNode('artifactId', er.module)
+              
+              // Add compileOnly dependencies as optional without trying to resolve them
+              configurations.compileOnly.allDependencies.each { dep ->
+                if (dep.name != 'unspecified') {
+                  def node = dependencies.appendNode('dependency')
+                  node.appendNode('groupId', dep instanceof ProjectDependency ? "io.consensys.protocols" : dep.group)
+                  node.appendNode('artifactId', dep instanceof ProjectDependency ? "${rootProject.name}-${dep.name}" : dep.name)
+                  // Get version from dependency management if available
+                  def version = dep.version ?: project.dependencyManagement.managedVersions["${dep.group}:${dep.name}"]
+                  node.appendNode('version', version)
+                  node.appendNode('optional', 'true')
                 }
               }
-            }
-            configurations.implementation.allDependencies.each { dep ->
-              addDependencyNode(dep, false, null)
-            }
-            configurations.compileOnly.allDependencies.each { dep ->
-              addDependencyNode(dep, true, null)
-            }
-            configurations.runtimeOnly.allDependencies.each { dep ->
-              addDependencyNode(dep, false, 'runtime')
+
+              if (System.getenv('ENABLE_SIGNING') == 'true') {
+                def pomFile = file("${project.buildDir}/generated-pom.xml")
+                writeTo(pomFile)
+                def pomAscFile = signing.sign(pomFile).signatureFiles[0]
+                artifact(pomAscFile) {
+                  classifier = null
+                  extension = 'pom.asc'
+                }
+              }
             }
 
             if (System.getenv('ENABLE_SIGNING') == 'true') {
-              def pomFile = file("${project.buildDir}/generated-pom.xml")
-              writeTo(pomFile)
-              def pomAscFile = signing.sign(pomFile).signatureFiles[0]
-              artifact(pomAscFile) {
-                classifier = null
-                extension = 'pom.asc'
-              }
-            }
-          }
-
-          if (System.getenv('ENABLE_SIGNING') == 'true') {
-            // create the signed artifacts
-            tasks.signArchives.signatureFiles.each {
-              artifact(it) {
-                def matcher = it.file =~ /-(sources|javadoc)\.jar\.asc$/
-                if (matcher.find()) {
-                  classifier = matcher.group(1)
-                } else {
-                  classifier = null
+              // create the signed artifacts
+              tasks.signArchives.signatureFiles.each {
+                artifact(it) {
+                  def matcher = it.file =~ /-(sources|javadoc)\.jar\.asc$/
+                  if (matcher.find()) {
+                    classifier = matcher.group(1)
+                  } else {
+                    classifier = null
+                  }
+                  extension = 'jar.asc'
                 }
-                extension = 'jar.asc'
               }
             }
           }
@@ -499,11 +475,9 @@ allprojects {
       enabled = false
     }
 
-    model {
-      tasks.generatePomFileForMavenDeploymentPublication {
-        destination = rootProject.layout.buildDirectory.file("generated-pom.xml")
-      }
-      tasks.publishMavenDeploymentPublicationToMavenLocal { dependsOn project.tasks.signArchives }
+    // Ensure each project's publication task depends on its own POM generation
+    tasks.withType(PublishToMavenLocal).configureEach { publishTask ->
+      publishTask.dependsOn(tasks.withType(GenerateMavenPom))
     }
   }
 }
