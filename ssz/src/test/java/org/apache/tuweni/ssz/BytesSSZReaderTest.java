@@ -3,14 +3,14 @@
 package org.apache.tuweni.ssz;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
-import static org.apache.tuweni.bytes.Bytes.fromHexString;
+import static org.apache.tuweni.bytes.v2.Bytes.fromHexString;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import org.apache.tuweni.bytes.Bytes;
-import org.apache.tuweni.bytes.Bytes32;
-import org.apache.tuweni.bytes.Bytes48;
+import org.apache.tuweni.bytes.v2.Bytes;
+import org.apache.tuweni.bytes.v2.Bytes32;
+import org.apache.tuweni.bytes.v2.Bytes48;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -126,9 +126,7 @@ class BytesSSZReaderTest {
     InvalidSSZTypeException ex =
         assertThrows(
             InvalidSSZTypeException.class,
-            () -> {
-              SSZ.decode(fromHexString("1122334455667788"), r -> r.readInt(64));
-            });
+            () -> SSZ.decode(fromHexString("1122334455667788"), r -> r.readInt(64)));
     assertEquals("decoded integer is too large for an int", ex.getMessage());
   }
 
@@ -220,29 +218,33 @@ class BytesSSZReaderTest {
 
   @Test
   void shouldRoundtripBytesVararg() {
-    List<Bytes> toWrite = Arrays.asList(Bytes48.random(), Bytes48.random(), Bytes48.random());
+    List<Bytes> toWrite =
+        Arrays.asList(Bytes48.fromRandom(), Bytes48.fromRandom(), Bytes48.fromRandom());
     Bytes encoded = SSZ.encode(writer -> writer.writeBytesList(toWrite.toArray(new Bytes[0])));
     assertEquals(toWrite, SSZ.decodeBytesList(encoded));
   }
 
   @Test
   void shouldRoundtripBytesList() {
-    List<Bytes> toWrite = Arrays.asList(Bytes48.random(), Bytes48.random(), Bytes48.random());
+    List<Bytes> toWrite =
+        Arrays.asList(Bytes48.fromRandom(), Bytes48.fromRandom(), Bytes48.fromRandom());
     Bytes encoded = SSZ.encode(writer -> writer.writeBytesList(toWrite));
     assertEquals(toWrite, SSZ.decodeBytesList(encoded));
   }
 
   @Test
   void shouldRoundtripBytesVector() {
-    List<Bytes> toWrite = Arrays.asList(Bytes48.random(), Bytes48.random(), Bytes48.random());
+    List<Bytes> toWrite =
+        Arrays.asList(Bytes48.fromRandom(), Bytes48.fromRandom(), Bytes48.fromRandom());
     Bytes encoded = SSZ.encode(writer -> writer.writeFixedBytesVector(toWrite));
     assertEquals(toWrite, SSZ.decode(encoded, reader -> reader.readFixedBytesVector(3, 48)));
   }
 
   @Test
   void shouldRoundtripHomogenousBytesList() {
-    List<Bytes32> toWrite = Arrays.asList(Bytes32.random(), Bytes32.random(), Bytes32.random());
+    List<Bytes> toWrite =
+        Arrays.asList(Bytes32.fromRandom(), Bytes32.fromRandom(), Bytes32.fromRandom());
     Bytes encoded = SSZ.encode(writer -> writer.writeFixedBytesList(toWrite));
-    assertEquals(toWrite, SSZ.decode(encoded, reader -> reader.readFixedBytesList(Bytes32.SIZE)));
+    assertEquals(toWrite, SSZ.decode(encoded, reader -> reader.readFixedBytesList(32)));
   }
 }

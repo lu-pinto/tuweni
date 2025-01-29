@@ -4,8 +4,8 @@ package org.apache.tuweni.ssz;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import org.apache.tuweni.bytes.Bytes;
-import org.apache.tuweni.bytes.Bytes32;
+import org.apache.tuweni.bytes.v2.Bytes;
+import org.apache.tuweni.bytes.v2.Bytes32;
 import org.apache.tuweni.crypto.Hash;
 import org.apache.tuweni.junit.BouncyCastleExtension;
 
@@ -35,7 +35,7 @@ class HashTreeRootTest {
 
   @Test
   void hashBytes32() {
-    Bytes32 someBytes = Bytes32.random();
+    Bytes someBytes = Bytes32.fromRandom();
     assertEquals(someBytes, SSZ.hashTreeRoot(someBytes));
   }
 

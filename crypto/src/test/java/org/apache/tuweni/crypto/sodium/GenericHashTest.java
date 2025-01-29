@@ -6,7 +6,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assumptions.assumeTrue;
 
-import org.apache.tuweni.bytes.Bytes;
+import org.apache.tuweni.bytes.v2.Bytes;
+import org.apache.tuweni.bytes.v2.Bytes32;
 
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -31,7 +32,7 @@ class GenericHashTest {
         GenericHash.hash(
             64,
             GenericHash.Input.fromBytes(Bytes.random(384)),
-            GenericHash.Key.fromBytes(Bytes.random(32)));
+            GenericHash.Key.fromBytes(Bytes32.fromRandom()));
     assertNotNull(output);
     assertEquals(64, output.bytes().size());
   }

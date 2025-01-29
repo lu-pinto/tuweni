@@ -5,7 +5,7 @@ package org.apache.tuweni.units.bigints;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-import org.apache.tuweni.bytes.Bytes;
+import org.apache.tuweni.bytes.v2.Bytes;
 
 import java.math.BigInteger;
 import java.util.stream.Stream;
@@ -923,7 +923,7 @@ class UInt384Test {
   @ParameterizedTest
   @MethodSource("toBytesProvider")
   void toBytesTest(UInt384 value, Bytes expected) {
-    assertEquals(expected, value.toBytes());
+    assertEquals(expected, value);
   }
 
   @SuppressWarnings("UnusedMethod")

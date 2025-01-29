@@ -5,7 +5,8 @@ package org.apache.tuweni.crypto.sodium;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assumptions.assumeTrue;
 
-import org.apache.tuweni.bytes.Bytes;
+import org.apache.tuweni.bytes.v2.Bytes;
+import org.apache.tuweni.bytes.v2.Bytes32;
 
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -20,13 +21,13 @@ class ConcatenateTest {
   @Test
   void testConcatenateTwoValues() {
     Concatenate concatenate = new Concatenate();
-    Bytes random = Bytes.random(32);
+    Bytes random = Bytes32.fromRandom();
 
     concatenate.add(Signature.PublicKey.fromBytes(random));
     concatenate.add(Signature.PublicKey.fromBytes(random));
 
     Allocated result = concatenate.concatenate();
 
-    assertEquals(Bytes.concatenate(random, random), result.bytes());
+    assertEquals(Bytes.wrap(random, random), result.bytes());
   }
 }

@@ -2,7 +2,8 @@
 // SPDX-License-Identifier: Apache-2.0
 package org.apache.tuweni.devp2p.v5.packet
 
-import org.apache.tuweni.bytes.Bytes
+import org.apache.tuweni.bytes.v2.Bytes
+import org.apache.tuweni.bytes.v2.Bytes32
 import org.apache.tuweni.devp2p.v5.TicketMessage
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
@@ -12,7 +13,7 @@ class TicketMessageTest {
   @Test
   fun encodeCreatesValidBytesSequence() {
     val requestId = Bytes.fromHexString("0xC6E32C5E89CAA754")
-    val message = TicketMessage(requestId, Bytes.random(32), 1000)
+    val message = TicketMessage(requestId, Bytes32.fromRandom(), 1000)
 
     val encodingResult = message.toRLP()
 
