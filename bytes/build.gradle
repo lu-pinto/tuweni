@@ -53,7 +53,7 @@ jmh {
              '-XX:+UnlockDiagnosticVMOptions',
            //   '-XX:+TraceDeoptimization',
            //   '-XX:+PrintCompilation',
-           //   '-XX:+PrintInlining',
+             // '-XX:+PrintInlining',
            //   '-XX:-Inline',
 //	         "-agentpath:$asyncProfiler/lib/libasyncProfiler.dylib=start,collapsed,loglevel=TRACE,flamegraph,file=$flamegraphFile"
   ]

@@ -59,7 +59,7 @@ public abstract class Bytes implements Comparable<Bytes> {
    * <p>Note that value is not copied and thus any future update to {@code value} within the slice
    * will be reflected in the returned value.
    *
-   * @param value The value to wrap.
+   * wparam valur The value to wrap.
    * @param offset The index (inclusive) in {@code value} of the first byte exposed by the returned
    *     value. In other words, you will have {@code wrap(value, o, l).get(0) == value[o]}.
    * @param length The length of the resulting value.
