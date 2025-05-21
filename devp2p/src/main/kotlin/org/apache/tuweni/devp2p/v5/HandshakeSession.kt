@@ -4,7 +4,6 @@ package org.apache.tuweni.devp2p.v5
 
 import io.vertx.core.net.SocketAddress
 import kotlinx.coroutines.CoroutineScope
-import org.apache.tuweni.bytes.v2.Bytes
 import org.apache.tuweni.concurrent.AsyncResult
 import org.apache.tuweni.concurrent.CompletableAsyncResult
 import org.apache.tuweni.crypto.Hash
@@ -16,6 +15,7 @@ import org.apache.tuweni.devp2p.v5.encrypt.SessionKeyGenerator
 import org.apache.tuweni.rlp.RLP
 import org.apache.tuweni.rlp.RLPReader
 import org.apache.tuweni.units.bigints.UInt256
+import org.apache.tuweni.v2.bytes.Bytes
 import org.slf4j.LoggerFactory
 import kotlin.coroutines.CoroutineContext
 

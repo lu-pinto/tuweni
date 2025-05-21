@@ -6,7 +6,6 @@ import io.vertx.core.net.SocketAddress
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import org.apache.tuweni.bytes.v2.Bytes
 import org.apache.tuweni.concurrent.AsyncCompletion
 import org.apache.tuweni.concurrent.AsyncResult
 import org.apache.tuweni.concurrent.CompletableAsyncCompletion
@@ -23,6 +22,7 @@ import org.apache.tuweni.devp2p.v5.topic.TopicTable
 import org.apache.tuweni.rlp.InvalidRLPTypeException
 import org.apache.tuweni.rlp.RLP
 import org.apache.tuweni.rlp.RLPReader
+import org.apache.tuweni.v2.bytes.Bytes
 import org.slf4j.LoggerFactory
 import java.lang.UnsupportedOperationException
 import kotlin.coroutines.CoroutineContext

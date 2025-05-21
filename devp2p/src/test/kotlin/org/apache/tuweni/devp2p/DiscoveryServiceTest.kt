@@ -8,7 +8,6 @@ import io.vertx.core.net.SocketAddress
 import io.vertx.kotlin.coroutines.coAwait
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
-import org.apache.tuweni.bytes.v2.Bytes
 import org.apache.tuweni.concurrent.AsyncResult
 import org.apache.tuweni.concurrent.CompletableAsyncResult
 import org.apache.tuweni.concurrent.coroutines.await
@@ -16,6 +15,7 @@ import org.apache.tuweni.crypto.SECP256K1
 import org.apache.tuweni.junit.BouncyCastleExtension
 import org.apache.tuweni.junit.VertxExtension
 import org.apache.tuweni.junit.VertxInstance
+import org.apache.tuweni.v2.bytes.Bytes
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.Assertions.assertNotNull

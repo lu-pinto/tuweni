@@ -2,9 +2,9 @@
 // SPDX-License-Identifier: Apache-2.0
 package org.apache.tuweni.devp2p.v5.packet
 
-import org.apache.tuweni.bytes.v2.Bytes
 import org.apache.tuweni.devp2p.v5.Message
 import org.apache.tuweni.devp2p.v5.RandomMessage
+import org.apache.tuweni.v2.bytes.Bytes
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertNotEquals
 import org.junit.jupiter.api.Test

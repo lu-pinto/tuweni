@@ -1,23 +1,24 @@
 // Copyright The Tuweni Authors
 // SPDX-License-Identifier: Apache-2.0
-package org.apache.tuweni.bytes.v2;
+package org.apache.tuweni.v2.bytes;
 
-import static org.apache.tuweni.bytes.v2.Utils.checkArgument;
-import static org.apache.tuweni.bytes.v2.Utils.checkElementIndex;
+import static org.apache.tuweni.v2.bytes.Utils.checkArgument;
+import static org.apache.tuweni.v2.bytes.Utils.checkElementIndex;
 
+import io.netty.buffer.ByteBuf;
 import io.vertx.core.buffer.Buffer;
 
-class BufferWrappingBytes extends Bytes {
+class ByteBufWrappingBytes extends Bytes {
 
-  protected final Buffer buffer;
+  protected final ByteBuf byteBuf;
 
-  BufferWrappingBytes(Buffer buffer) {
-    this.buffer = buffer;
+  ByteBufWrappingBytes(ByteBuf byteBuf) {
+    this.byteBuf = byteBuf;
   }
 
-  BufferWrappingBytes(Buffer buffer, int offset, int length) {
+  ByteBufWrappingBytes(ByteBuf byteBuf, int offset, int length) {
     checkArgument(length >= 0, "Invalid negative length");
-    int bufferLength = buffer.length();
+    int bufferLength = byteBuf.capacity();
     checkElementIndex(offset, bufferLength + 1);
     checkArgument(
         offset + length <= bufferLength,
@@ -28,40 +29,40 @@ class BufferWrappingBytes extends Bytes {
         offset);
 
     if (offset == 0 && length == bufferLength) {
-      this.buffer = buffer;
+      this.byteBuf = byteBuf;
     } else {
-      this.buffer = buffer.slice(offset, offset + length);
+      this.byteBuf = byteBuf.slice(offset, length);
     }
   }
 
   @Override
   public int size() {
-    return buffer.length();
+    return byteBuf.capacity();
   }
 
   @Override
   public byte get(int i) {
-    return buffer.getByte(i);
+    return byteBuf.getByte(i);
   }
 
   @Override
   public int getInt(int i) {
-    return buffer.getInt(i);
+    return byteBuf.getInt(i);
   }
 
   @Override
   public long getLong(int i) {
-    return buffer.getLong(i);
+    return byteBuf.getLong(i);
   }
 
   @Override
   public Bytes slice(int i, int length) {
-    int size = buffer.length();
+    int size = byteBuf.capacity();
     if (i == 0 && length == size) {
       return this;
     }
     if (length == 0) {
-      return Bytes.EMPTY;
+      return EMPTY;
     }
 
     checkElementIndex(i, size);
@@ -73,42 +74,44 @@ class BufferWrappingBytes extends Bytes {
         size - i,
         i);
 
-    return new BufferWrappingBytes(buffer.slice(i, i + length));
+    return new ByteBufWrappingBytes(byteBuf.slice(i, length));
   }
 
   @Override
   public MutableBytes mutableCopy() {
-    return MutableBytes.fromArray(toArrayUnsafe());
+    return MutableBytes.fromByteBuf(byteBuf, 0, byteBuf.capacity());
   }
 
   @Override
   public void appendTo(Buffer buffer) {
-    buffer.appendBuffer(this.buffer);
+    buffer.appendBuffer(Buffer.buffer(this.byteBuf));
   }
 
   @Override
   public byte[] toArrayUnsafe() {
-    return buffer.getBytes();
+    byte[] array = new byte[byteBuf.capacity()];
+    byteBuf.getBytes(0, array);
+    return array;
   }
 
   @Override
   protected void and(byte[] bytesArray, int offset, int length) {
     for (int i = 0; i < length; i++) {
-      bytesArray[offset + i] = (byte) (buffer.getByte(i) & bytesArray[offset + i]);
+      bytesArray[offset + i] = (byte) (byteBuf.getByte(i) & bytesArray[offset + i]);
     }
   }
 
   @Override
   protected void or(byte[] bytesArray, int offset, int length) {
     for (int i = 0; i < length; i++) {
-      bytesArray[offset + i] = (byte) (buffer.getByte(i) | bytesArray[offset + i]);
+      bytesArray[offset + i] = (byte) (byteBuf.getByte(i) | bytesArray[offset + i]);
     }
   }
 
   @Override
   protected void xor(byte[] bytesArray, int offset, int length) {
     for (int i = 0; i < length; i++) {
-      bytesArray[offset + i] = (byte) (buffer.getByte(i) ^ bytesArray[offset + i]);
+      bytesArray[offset + i] = (byte) (byteBuf.getByte(i) ^ bytesArray[offset + i]);
     }
   }
 }

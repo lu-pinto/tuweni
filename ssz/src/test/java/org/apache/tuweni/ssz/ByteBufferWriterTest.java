@@ -3,11 +3,11 @@
 package org.apache.tuweni.ssz;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
-import static org.apache.tuweni.bytes.v2.Bytes.fromHexString;
+import static org.apache.tuweni.v2.bytes.Bytes.fromHexString;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import org.apache.tuweni.bytes.v2.Bytes;
 import org.apache.tuweni.units.bigints.UInt256;
+import org.apache.tuweni.v2.bytes.Bytes;
 
 import java.math.BigInteger;
 import java.nio.ByteBuffer;

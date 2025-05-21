@@ -2,9 +2,9 @@
 // SPDX-License-Identifier: Apache-2.0
 package org.apache.tuweni.devp2p.v5
 
-import org.apache.tuweni.bytes.v2.Bytes
 import org.apache.tuweni.devp2p.EthereumNodeRecord
 import org.apache.tuweni.rlp.RLP
+import org.apache.tuweni.v2.bytes.Bytes
 import java.net.InetAddress
 
 internal class FindNodeMessage(

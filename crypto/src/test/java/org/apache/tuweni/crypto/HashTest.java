@@ -5,8 +5,8 @@ package org.apache.tuweni.crypto;
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.junit.jupiter.api.Assertions.*;
 
-import org.apache.tuweni.bytes.v2.Bytes;
 import org.apache.tuweni.junit.BouncyCastleExtension;
+import org.apache.tuweni.v2.bytes.Bytes;
 
 import java.security.Provider;
 import java.security.Security;

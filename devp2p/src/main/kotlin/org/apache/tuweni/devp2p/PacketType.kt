@@ -2,8 +2,8 @@
 // SPDX-License-Identifier: Apache-2.0
 package org.apache.tuweni.devp2p
 
-import org.apache.tuweni.bytes.v2.Bytes
 import org.apache.tuweni.crypto.SECP256K1
+import org.apache.tuweni.v2.bytes.Bytes
 
 /**
  * DevP2P discovery packet types

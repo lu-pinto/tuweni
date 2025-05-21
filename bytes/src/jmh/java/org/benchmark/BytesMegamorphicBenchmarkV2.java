@@ -2,6 +2,8 @@
 // SPDX-License-Identifier: Apache-2.0
 package org.benchmark;
 
+import org.apache.tuweni.v2.bytes.Bytes;
+
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
@@ -27,28 +29,28 @@ public class BytesMegamorphicBenchmarkV2 extends ProfiledBenchmark {
   private static final int N = 4;
   private static final int FACTOR = 1000000;
   private static final Random RANDOM = new Random(23L);
-  org.apache.tuweni.bytes.v2.Bytes[] bytesV2;
+  Bytes[] bytesV2;
 
   @Param({"mono", "mega"})
   private String mode;
 
   @Setup
   public void setup() {
-    bytesV2 = new org.apache.tuweni.bytes.v2.Bytes[N * FACTOR];
+    bytesV2 = new Bytes[N * FACTOR];
     for (int i = 0; i < N * FACTOR; i += N) {
-      bytesV2[i] = org.apache.tuweni.bytes.v2.Bytes.wrap(getBytes(32));
+      bytesV2[i] = Bytes.wrap(getBytes(32));
       bytesV2[i + 1] =
           "mega".equals(mode)
-              ? org.apache.tuweni.bytes.v2.Bytes.wrap(getBytes(48))
-              : org.apache.tuweni.bytes.v2.Bytes.wrap(getBytes(32));
+              ? Bytes.wrap(getBytes(48))
+              : Bytes.wrap(getBytes(32));
       bytesV2[i + 2] =
           "mega".equals(mode)
-              ? org.apache.tuweni.bytes.v2.Bytes.repeat((byte) 0x09, 16)
-              : org.apache.tuweni.bytes.v2.Bytes.wrap(getBytes(32));
+              ? Bytes.repeat((byte) 0x09, 16)
+              : Bytes.wrap(getBytes(32));
       bytesV2[i + 3] =
           "mega".equals(mode)
-              ? org.apache.tuweni.bytes.v2.Bytes.wrap(bytesV2[i], bytesV2[i + 1])
-              : org.apache.tuweni.bytes.v2.Bytes.wrap(getBytes(32));
+              ? Bytes.wrap(bytesV2[i], bytesV2[i + 1])
+              : Bytes.wrap(getBytes(32));
     }
   }
 
@@ -60,7 +62,7 @@ public class BytesMegamorphicBenchmarkV2 extends ProfiledBenchmark {
 
   @Benchmark
   public void test() {
-    for (org.apache.tuweni.bytes.v2.Bytes b : bytesV2) {
+    for (Bytes b : bytesV2) {
       b.get(1);
     }
   }

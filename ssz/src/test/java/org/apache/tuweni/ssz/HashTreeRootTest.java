@@ -4,10 +4,10 @@ package org.apache.tuweni.ssz;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import org.apache.tuweni.bytes.v2.Bytes;
-import org.apache.tuweni.bytes.v2.Bytes32;
 import org.apache.tuweni.crypto.Hash;
 import org.apache.tuweni.junit.BouncyCastleExtension;
+import org.apache.tuweni.v2.bytes.Bytes;
+import org.apache.tuweni.v2.bytes.Bytes32;
 
 import org.bouncycastle.util.Arrays;
 import org.junit.jupiter.api.Test;

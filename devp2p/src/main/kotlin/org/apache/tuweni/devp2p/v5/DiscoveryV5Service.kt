@@ -13,7 +13,6 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.launch
-import org.apache.tuweni.bytes.v2.Bytes
 import org.apache.tuweni.concurrent.AsyncCompletion
 import org.apache.tuweni.concurrent.AsyncResult
 import org.apache.tuweni.concurrent.ExpiringMap
@@ -27,6 +26,7 @@ import org.apache.tuweni.devp2p.Packet
 import org.apache.tuweni.devp2p.v5.encrypt.SessionKey
 import org.apache.tuweni.devp2p.v5.topic.TopicTable
 import org.apache.tuweni.io.Base64URLSafe
+import org.apache.tuweni.v2.bytes.Bytes
 import org.slf4j.LoggerFactory
 import java.net.InetAddress
 import java.net.InetSocketAddress

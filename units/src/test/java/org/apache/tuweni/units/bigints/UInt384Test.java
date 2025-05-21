@@ -5,7 +5,7 @@ package org.apache.tuweni.units.bigints;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-import org.apache.tuweni.bytes.v2.Bytes;
+import org.apache.tuweni.v2.bytes.Bytes;
 
 import java.math.BigInteger;
 import java.util.stream.Stream;

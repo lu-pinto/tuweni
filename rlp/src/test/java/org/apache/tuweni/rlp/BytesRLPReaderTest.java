@@ -2,12 +2,12 @@
 // SPDX-License-Identifier: Apache-2.0
 package org.apache.tuweni.rlp;
 
-import static org.apache.tuweni.bytes.v2.Bytes.fromHexString;
+import static org.apache.tuweni.v2.bytes.Bytes.fromHexString;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import org.apache.tuweni.bytes.v2.Bytes;
+import org.apache.tuweni.v2.bytes.Bytes;
 
 import java.math.BigInteger;
 import java.util.Arrays;

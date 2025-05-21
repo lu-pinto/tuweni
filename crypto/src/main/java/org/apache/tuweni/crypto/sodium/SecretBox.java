@@ -5,7 +5,7 @@ package org.apache.tuweni.crypto.sodium;
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.util.Objects.requireNonNull;
 
-import org.apache.tuweni.bytes.v2.Bytes;
+import org.apache.tuweni.v2.bytes.Bytes;
 
 import java.util.Arrays;
 import javax.security.auth.Destroyable;

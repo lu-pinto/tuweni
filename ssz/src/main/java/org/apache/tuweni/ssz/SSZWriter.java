@@ -2,9 +2,9 @@
 // SPDX-License-Identifier: Apache-2.0
 package org.apache.tuweni.ssz;
 
-import org.apache.tuweni.bytes.v2.Bytes;
 import org.apache.tuweni.units.bigints.UInt256;
 import org.apache.tuweni.units.bigints.UInt384;
+import org.apache.tuweni.v2.bytes.Bytes;
 
 import java.math.BigInteger;
 import java.util.List;

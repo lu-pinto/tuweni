@@ -5,7 +5,7 @@ package org.apache.tuweni.io;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-import org.apache.tuweni.bytes.v2.Bytes;
+import org.apache.tuweni.v2.bytes.Bytes;
 
 import java.nio.charset.StandardCharsets;
 

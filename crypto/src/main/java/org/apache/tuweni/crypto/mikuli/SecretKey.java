@@ -5,7 +5,7 @@ package org.apache.tuweni.crypto.mikuli;
 import static org.apache.milagro.amcl.BLS381.BIG.MODBYTES;
 
 import org.apache.milagro.amcl.BLS381.BIG;
-import org.apache.tuweni.bytes.v2.Bytes;
+import org.apache.tuweni.v2.bytes.Bytes;
 
 import java.util.Objects;
 

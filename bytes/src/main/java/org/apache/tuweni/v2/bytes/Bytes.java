@@ -1,12 +1,12 @@
 // Copyright The Tuweni Authors
 // SPDX-License-Identifier: Apache-2.0
-package org.apache.tuweni.bytes.v2;
+package org.apache.tuweni.v2.bytes;
 
 import static java.lang.String.format;
 import static java.nio.ByteOrder.BIG_ENDIAN;
-import static org.apache.tuweni.bytes.v2.Utils.checkArgument;
-import static org.apache.tuweni.bytes.v2.Utils.checkElementIndex;
-import static org.apache.tuweni.bytes.v2.Utils.checkNotNull;
+import static org.apache.tuweni.v2.bytes.Utils.checkArgument;
+import static org.apache.tuweni.v2.bytes.Utils.checkElementIndex;
+import static org.apache.tuweni.v2.bytes.Utils.checkNotNull;
 
 import java.io.IOException;
 import java.io.UncheckedIOException;

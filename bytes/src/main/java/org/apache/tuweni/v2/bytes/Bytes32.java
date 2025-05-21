@@ -1,9 +1,9 @@
 // Copyright The Tuweni Authors
 // SPDX-License-Identifier: Apache-2.0
-package org.apache.tuweni.bytes.v2;
+package org.apache.tuweni.v2.bytes;
 
-import static org.apache.tuweni.bytes.v2.Utils.checkArgument;
-import static org.apache.tuweni.bytes.v2.Utils.checkNotNull;
+import static org.apache.tuweni.v2.bytes.Utils.checkArgument;
+import static org.apache.tuweni.v2.bytes.Utils.checkNotNull;
 
 import java.security.SecureRandom;
 import java.util.Random;
@@ -30,7 +30,7 @@ public final class Bytes32 extends DelegatingBytes {
   }
 
   public static Bytes fromByte(byte b) {
-    return Bytes.repeat(b, SIZE);
+    return repeat(b, SIZE);
   }
 
   /**

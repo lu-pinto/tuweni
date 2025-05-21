@@ -23,8 +23,8 @@ import static org.apache.tuweni.crypto.SECP256K1.Parameters.CURVE;
 import static org.apache.tuweni.crypto.SECP256K1.Parameters.PARAMETER_SPEC;
 import static org.apache.tuweni.io.file.Files.atomicReplace;
 
-import org.apache.tuweni.bytes.v2.Bytes;
-import org.apache.tuweni.bytes.v2.MutableBytes;
+import org.apache.tuweni.v2.bytes.Bytes;
+import org.apache.tuweni.v2.bytes.MutableBytes;
 import org.apache.tuweni.units.bigints.UInt256;
 
 import java.io.IOException;

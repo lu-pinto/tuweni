@@ -5,7 +5,7 @@ package org.apache.tuweni.net.tls;
 import static java.lang.String.format;
 import static org.apache.tuweni.net.tls.TLS.certificateFingerprint;
 
-import org.apache.tuweni.bytes.v2.Bytes;
+import org.apache.tuweni.v2.bytes.Bytes;
 
 import java.net.InetSocketAddress;
 import java.net.Socket;

@@ -2,14 +2,14 @@
 // SPDX-License-Identifier: Apache-2.0
 package org.apache.tuweni.devp2p
 
-import org.apache.tuweni.bytes.v2.Bytes
-import org.apache.tuweni.bytes.v2.MutableBytes
 import org.apache.tuweni.crypto.Hash
 import org.apache.tuweni.crypto.SECP256K1
 import org.apache.tuweni.rlp.RLP
 import org.apache.tuweni.rlp.RLPReader
 import org.apache.tuweni.rlp.RLPWriter
 import org.apache.tuweni.units.bigints.UInt256
+import org.apache.tuweni.v2.bytes.Bytes
+import org.apache.tuweni.v2.bytes.MutableBytes
 import java.lang.IllegalArgumentException
 import java.lang.RuntimeException
 import java.net.InetAddress

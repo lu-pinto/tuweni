@@ -21,7 +21,6 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withTimeout
 import kotlinx.coroutines.withTimeoutOrNull
-import org.apache.tuweni.bytes.v2.Bytes
 import org.apache.tuweni.concurrent.AsyncCompletion
 import org.apache.tuweni.concurrent.AsyncResult
 import org.apache.tuweni.concurrent.coroutines.asyncCompletion
@@ -30,6 +29,7 @@ import org.apache.tuweni.concurrent.coroutines.await
 import org.apache.tuweni.crypto.SECP256K1
 import org.apache.tuweni.kademlia.orderedInsert
 import org.apache.tuweni.kademlia.xorDistCmp
+import org.apache.tuweni.v2.bytes.Bytes
 import org.slf4j.LoggerFactory
 import java.net.InetAddress
 import java.net.URI

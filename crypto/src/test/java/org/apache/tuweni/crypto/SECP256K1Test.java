@@ -3,11 +3,9 @@
 package org.apache.tuweni.crypto;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
-import static org.apache.tuweni.bytes.v2.Bytes.fromHexString;
+import static org.apache.tuweni.v2.bytes.Bytes.fromHexString;
 import static org.junit.jupiter.api.Assertions.*;
 
-import org.apache.tuweni.bytes.v2.Bytes;
-import org.apache.tuweni.bytes.v2.MutableBytes;
 import org.apache.tuweni.crypto.SECP256K1.KeyPair;
 import org.apache.tuweni.crypto.SECP256K1.PublicKey;
 import org.apache.tuweni.crypto.SECP256K1.SecretKey;
@@ -15,6 +13,8 @@ import org.apache.tuweni.crypto.SECP256K1.Signature;
 import org.apache.tuweni.junit.BouncyCastleExtension;
 import org.apache.tuweni.junit.TempDirectory;
 import org.apache.tuweni.junit.TempDirectoryExtension;
+import org.apache.tuweni.v2.bytes.Bytes;
+import org.apache.tuweni.v2.bytes.MutableBytes;
 
 import java.math.BigInteger;
 import java.nio.file.Files;

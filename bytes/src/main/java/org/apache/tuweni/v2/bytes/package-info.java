@@ -18,6 +18,6 @@
  * gradle dependency 'org.apache.tuweni:tuweni-bytes' (tuweni-bytes.jar).
  */
 @ParametersAreNonnullByDefault
-package org.apache.tuweni.bytes.v2;
+package org.apache.tuweni.v2.bytes;
 
 import javax.annotation.ParametersAreNonnullByDefault;

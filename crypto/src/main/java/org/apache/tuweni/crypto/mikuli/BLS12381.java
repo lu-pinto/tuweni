@@ -5,7 +5,7 @@ package org.apache.tuweni.crypto.mikuli;
 import org.apache.milagro.amcl.BLS381.ECP;
 import org.apache.milagro.amcl.BLS381.ECP2;
 import org.apache.milagro.amcl.BLS381.MPIN;
-import org.apache.tuweni.bytes.v2.Bytes;
+import org.apache.tuweni.v2.bytes.Bytes;
 
 /*
  * Adapted from the ConsenSys/mikuli (Apache 2 License) implementation:

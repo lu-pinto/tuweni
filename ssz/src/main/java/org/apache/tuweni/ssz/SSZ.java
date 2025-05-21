@@ -6,10 +6,10 @@ import static java.nio.ByteOrder.LITTLE_ENDIAN;
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.util.Objects.requireNonNull;
 
-import org.apache.tuweni.bytes.v2.Bytes;
 import org.apache.tuweni.crypto.Hash;
 import org.apache.tuweni.units.bigints.UInt256;
 import org.apache.tuweni.units.bigints.UInt384;
+import org.apache.tuweni.v2.bytes.Bytes;
 
 import java.math.BigInteger;
 import java.nio.BufferOverflowException;

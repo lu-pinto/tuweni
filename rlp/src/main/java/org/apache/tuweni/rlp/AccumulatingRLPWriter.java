@@ -7,7 +7,7 @@ import static org.apache.tuweni.rlp.RLP.encodeByteArray;
 import static org.apache.tuweni.rlp.RLP.encodeLength;
 import static org.apache.tuweni.rlp.RLP.encodeNumber;
 
-import org.apache.tuweni.bytes.v2.Bytes;
+import org.apache.tuweni.v2.bytes.Bytes;
 
 import java.util.ArrayDeque;
 import java.util.Deque;

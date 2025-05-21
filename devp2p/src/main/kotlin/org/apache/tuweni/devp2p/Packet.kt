@@ -2,12 +2,12 @@
 // SPDX-License-Identifier: Apache-2.0
 package org.apache.tuweni.devp2p
 
-import org.apache.tuweni.bytes.v2.Bytes
 import org.apache.tuweni.crypto.Hash
 import org.apache.tuweni.crypto.SECP256K1
 import org.apache.tuweni.rlp.RLP
 import org.apache.tuweni.rlp.RLPException
 import org.apache.tuweni.rlp.RLPWriter
+import org.apache.tuweni.v2.bytes.Bytes
 import java.nio.ByteBuffer
 
 internal class DecodingException(message: String, cause: Throwable? = null) : Exception(message, cause)

@@ -4,7 +4,7 @@ package org.apache.tuweni.crypto.sodium;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
 
-import org.apache.tuweni.bytes.v2.Bytes;
+import org.apache.tuweni.v2.bytes.Bytes;
 
 import jnr.ffi.Pointer;
 import org.jetbrains.annotations.Nullable;

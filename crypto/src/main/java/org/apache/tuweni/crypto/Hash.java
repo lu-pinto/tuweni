@@ -4,9 +4,9 @@ package org.apache.tuweni.crypto;
 
 import static java.util.Objects.requireNonNull;
 
-import org.apache.tuweni.bytes.v2.Bytes;
 import org.apache.tuweni.crypto.sodium.SHA256Hash;
 import org.apache.tuweni.crypto.sodium.Sodium;
+import org.apache.tuweni.v2.bytes.Bytes;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
