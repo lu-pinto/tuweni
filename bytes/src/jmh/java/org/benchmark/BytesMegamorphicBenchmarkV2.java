@@ -39,18 +39,11 @@ public class BytesMegamorphicBenchmarkV2 extends ProfiledBenchmark {
     bytesV2 = new Bytes[N * FACTOR];
     for (int i = 0; i < N * FACTOR; i += N) {
       bytesV2[i] = Bytes.wrap(getBytes(32));
-      bytesV2[i + 1] =
-          "mega".equals(mode)
-              ? Bytes.wrap(getBytes(48))
-              : Bytes.wrap(getBytes(32));
+      bytesV2[i + 1] = "mega".equals(mode) ? Bytes.wrap(getBytes(48)) : Bytes.wrap(getBytes(32));
       bytesV2[i + 2] =
-          "mega".equals(mode)
-              ? Bytes.repeat((byte) 0x09, 16)
-              : Bytes.wrap(getBytes(32));
+          "mega".equals(mode) ? Bytes.repeat((byte) 0x09, 16) : Bytes.wrap(getBytes(32));
       bytesV2[i + 3] =
-          "mega".equals(mode)
-              ? Bytes.wrap(bytesV2[i], bytesV2[i + 1])
-              : Bytes.wrap(getBytes(32));
+          "mega".equals(mode) ? Bytes.wrap(bytesV2[i], bytesV2[i + 1]) : Bytes.wrap(getBytes(32));
     }
   }
 
