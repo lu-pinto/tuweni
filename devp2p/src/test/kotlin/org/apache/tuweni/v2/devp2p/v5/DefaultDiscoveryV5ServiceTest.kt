@@ -28,10 +28,10 @@ class DefaultDiscoveryV5ServiceTest {
 
   private val recipientKeyPair: SECP256K1.KeyPair = SECP256K1.KeyPair.random()
   private val recipientEnr: Bytes =
-    EthereumNodeRecord.toRLP(recipientKeyPair, ip = InetAddress.getLoopbackAddress(), udp = 19001)
+    EthereumNodeRecord.toRLP(recipientKeyPair, ip = InetAddress.getLoopbackAddress(), udp = 19003)
   private val encodedEnr: String = "enr:${Base64URLSafe.encode(recipientEnr)}"
   private val keyPair: SECP256K1.KeyPair = SECP256K1.KeyPair.random()
-  private val localPort: Int = 19000
+  private val localPort: Int = 19002
   private val bootstrapENRList: List<String> = listOf(encodedEnr)
 
   @Test
@@ -39,7 +39,7 @@ class DefaultDiscoveryV5ServiceTest {
     val reference = AsyncResult.incomplete<Buffer>()
     val client = vertx.createDatagramSocket().handler { res ->
       reference.complete(res.data())
-    }.listen(19001, "localhost").coAwait()
+    }.listen(19003, "localhost").coAwait()
     val discoveryV5Service: DiscoveryV5Service =
       DiscoveryService.open(
         vertx,
