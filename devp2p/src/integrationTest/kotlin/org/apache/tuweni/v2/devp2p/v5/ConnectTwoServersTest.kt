@@ -6,13 +6,13 @@ import io.vertx.core.Vertx
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
 import org.apache.tuweni.concurrent.coroutines.await
-import org.apache.tuweni.crypto.Hash
-import org.apache.tuweni.crypto.SECP256K1
-import org.apache.tuweni.devp2p.EthereumNodeRecord
 import org.apache.tuweni.junit.BouncyCastleExtension
 import org.apache.tuweni.junit.VertxExtension
 import org.apache.tuweni.junit.VertxInstance
 import org.apache.tuweni.v2.bytes.Bytes
+import org.apache.tuweni.v2.crypto.Hash
+import org.apache.tuweni.v2.crypto.SECP256K1
+import org.apache.tuweni.v2.devp2p.EthereumNodeRecord
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertNotNull
 import org.junit.jupiter.api.Test
@@ -39,7 +39,7 @@ class ConnectTwoServersTest {
     val service = DiscoveryService.open(
       vertx,
       SECP256K1.KeyPair.random(),
-      localPort = 40000,
+      localPort = 40002,
       bootstrapENRList = emptyList(),
       enrStorage = storage,
     )
@@ -49,7 +49,7 @@ class ConnectTwoServersTest {
     val otherService = DiscoveryService.open(
       vertx,
       SECP256K1.KeyPair.random(),
-      localPort = 40001,
+      localPort = 40003,
       bootstrapENRList = emptyList(),
       enrStorage = otherStorage,
     )
