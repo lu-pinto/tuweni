@@ -51,7 +51,7 @@ class DefaultAuthenticationProviderTest {
 //    val ephemeralKeyPair = SECP256K1.KeyPair.random()
 //    val ephemeralKey = ephemeralKeyPair.secretKey()
 //
-//    val signValue = Bytes.wrap(Bytes.wrap("discovery-id-nonce".toByteArray()), nonce)
+//    val signValue = Bytes.concatenate(Bytes.wrap("discovery-id-nonce".toByteArray()), nonce)
 //    val hashedSignValue = Hash.sha2_256(signValue)
 //    val signature =  SECP256K1.sign(hashedSignValue, keyPair)
 //
