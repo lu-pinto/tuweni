@@ -9,9 +9,9 @@ import java.util.concurrent.TimeUnit;
 
 import org.openjdk.jmh.annotations.Benchmark;
 import org.openjdk.jmh.annotations.BenchmarkMode;
-import org.openjdk.jmh.annotations.Fork;
 import org.openjdk.jmh.annotations.Measurement;
 import org.openjdk.jmh.annotations.Mode;
+import org.openjdk.jmh.annotations.OperationsPerInvocation;
 import org.openjdk.jmh.annotations.OutputTimeUnit;
 import org.openjdk.jmh.annotations.Param;
 import org.openjdk.jmh.annotations.Scope;
@@ -19,15 +19,14 @@ import org.openjdk.jmh.annotations.Setup;
 import org.openjdk.jmh.annotations.State;
 import org.openjdk.jmh.annotations.Warmup;
 
-@Warmup(iterations = 10, time = 1, timeUnit = TimeUnit.SECONDS)
+@Warmup(iterations = 5, time = 1, timeUnit = TimeUnit.SECONDS)
 @Measurement(iterations = 10, time = 1, timeUnit = TimeUnit.SECONDS)
 @BenchmarkMode(value = Mode.AverageTime)
-@State(Scope.Benchmark)
-@Fork(value = 1)
-@OutputTimeUnit(value = TimeUnit.MILLISECONDS)
-public class BytesMegamorphicBenchmarkV2 extends ProfiledBenchmark {
+@State(Scope.Thread)
+@OutputTimeUnit(value = TimeUnit.NANOSECONDS)
+public class BytesMegamorphicBenchmarkV2 {
   private static final int N = 4;
-  private static final int FACTOR = 1000000;
+  private static final int FACTOR = 1000;
   private static final Random RANDOM = new Random(23L);
   Bytes[] bytesV2;
 
@@ -54,13 +53,10 @@ public class BytesMegamorphicBenchmarkV2 extends ProfiledBenchmark {
   }
 
   @Benchmark
+  @OperationsPerInvocation(N * FACTOR)
   public void test() {
     for (Bytes b : bytesV2) {
       b.get(1);
     }
-  }
-
-  String getUniqueTestId() {
-    return this.getClass().getSimpleName() + "-" + mode + "-" + System.currentTimeMillis();
   }
 }
