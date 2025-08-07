@@ -11,13 +11,13 @@ class ByteBufferWrappingBytes extends Bytes {
 
   protected final ByteBuffer byteBuffer;
   protected final int offset;
-  protected final int length;
 
   ByteBufferWrappingBytes(ByteBuffer byteBuffer) {
     this(byteBuffer, 0, byteBuffer.limit());
   }
 
   ByteBufferWrappingBytes(ByteBuffer byteBuffer, int offset, int length) {
+    super(length);
     checkArgument(length >= 0, "Invalid negative length");
     int bufferLength = byteBuffer.capacity();
     if (bufferLength > 0) {
@@ -32,12 +32,6 @@ class ByteBufferWrappingBytes extends Bytes {
 
     this.byteBuffer = byteBuffer;
     this.offset = offset;
-    this.length = length;
-  }
-
-  @Override
-  public int size() {
-    return length;
   }
 
   @Override
@@ -57,20 +51,20 @@ class ByteBufferWrappingBytes extends Bytes {
 
   @Override
   public Bytes slice(int i, int length) {
-    if (i == 0 && length == this.length) {
+    if (i == 0 && length == size()) {
       return this;
     }
     if (length == 0) {
       return Bytes.EMPTY;
     }
 
-    checkElementIndex(i, this.length);
+    checkElementIndex(i, size());
     checkArgument(
-        i + length <= this.length,
+        i + length <= size(),
         "Provided length %s is too big: the value has size %s and has only %s bytes from %s",
         length,
-        this.length,
-        this.length - i,
+        size(),
+        size() - i,
         i);
 
     return new ByteBufferWrappingBytes(byteBuffer, offset + i, length);
@@ -78,7 +72,7 @@ class ByteBufferWrappingBytes extends Bytes {
 
   @Override
   public MutableBytes mutableCopy() {
-    return MutableBytes.fromByteBuffer(byteBuffer, offset, length);
+    return MutableBytes.fromByteBuffer(byteBuffer, offset, size());
   }
 
   @Override
@@ -87,8 +81,8 @@ class ByteBufferWrappingBytes extends Bytes {
   }
 
   private byte[] toArray() {
-    byte[] array = new byte[length];
-    for (int i = 0; i < length; i++) {
+    byte[] array = new byte[size()];
+    for (int i = 0; i < size(); i++) {
       array[i] = byteBuffer.get(i + offset);
     }
     return array;
@@ -100,7 +94,7 @@ class ByteBufferWrappingBytes extends Bytes {
       return toArray();
     }
     byte[] array = byteBuffer.array();
-    if (byteBuffer.limit() != length || byteBuffer.arrayOffset() != offset) {
+    if (byteBuffer.limit() != size() || byteBuffer.arrayOffset() != offset) {
       return toArray();
     }
     return array;

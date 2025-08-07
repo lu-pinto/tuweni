@@ -23,12 +23,14 @@ public class MutableBytes extends Bytes {
   private int length;
 
   MutableBytes(int size) {
+    super(size);
     this.offset = 0;
     this.length = size;
     this.bytesArray = new byte[length];
   }
 
   MutableBytes(byte[] bytesArray) {
+    super(bytesArray.length);
     this.offset = 0;
     this.length = bytesArray.length;
     this.bytesArray = new byte[length];
@@ -36,6 +38,7 @@ public class MutableBytes extends Bytes {
   }
 
   MutableBytes(byte[] bytesArray, int offset, int length) {
+    super(length);
     this.offset = 0;
     this.length = length;
     this.bytesArray = new byte[length];

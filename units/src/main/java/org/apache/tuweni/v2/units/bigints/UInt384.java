@@ -117,6 +117,7 @@ public final class UInt384 extends Bytes {
   }
 
   private UInt384(Bytes bytes) {
+    super(48);
     this.ints = new int[INTS_SIZE];
     for (int i = 0, j = 0; i < INTS_SIZE; ++i, j += 4) {
       ints[i] = bytes.getInt(j);
@@ -124,12 +125,14 @@ public final class UInt384 extends Bytes {
   }
 
   private UInt384(long value) {
+    super(48);
     this.ints = new int[INTS_SIZE];
     this.ints[INTS_SIZE - 2] = (int) ((value >>> 32) & LONG_MASK);
     this.ints[INTS_SIZE - 1] = (int) (value & LONG_MASK);
   }
 
   private UInt384(int[] ints) {
+    super(48);
     this.ints = ints;
   }
 
@@ -684,11 +687,6 @@ public final class UInt384 extends Bytes {
     }
     // Lastly, the left-most byte of the int must not start with a 1.
     return this.ints[INTS_SIZE - 2] >= 0;
-  }
-
-  @Override
-  public int size() {
-    return 48;
   }
 
   @Override

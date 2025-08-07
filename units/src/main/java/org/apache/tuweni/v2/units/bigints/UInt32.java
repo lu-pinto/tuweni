@@ -126,6 +126,7 @@ public final class UInt32 extends Bytes {
   }
 
   private UInt32(int value) {
+    super(4);
     this.value = value;
   }
 
@@ -348,11 +349,6 @@ public final class UInt32 extends Bytes {
     for (int i = 0; i < length; i++) {
       bytesArray[offset + i] = (byte) (get(i) ^ bytesArray[offset + i]);
     }
-  }
-
-  @Override
-  public int size() {
-    return 4;
   }
 
   @Override

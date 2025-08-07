@@ -56,7 +56,7 @@ public class BytesMegamorphicBenchmarkV2 {
   @OperationsPerInvocation(N * FACTOR)
   public void test() {
     for (Bytes b : bytesV2) {
-      b.get(1);
+      b.slice(1);
     }
   }
 }

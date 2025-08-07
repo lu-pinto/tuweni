@@ -20,17 +20,11 @@ import io.vertx.core.buffer.Buffer;
 public class DelegatingBytes extends Bytes {
 
   final Bytes delegate;
-  final int size;
 
   protected DelegatingBytes(Bytes delegate, int size) {
+    super(size);
     this.delegate = delegate;
     checkArgument(delegate.size() == size, "Expected %s bytes but got %s", size, delegate.size());
-    this.size = size;
-  }
-
-  @Override
-  public int size() {
-    return size;
   }
 
   @Override

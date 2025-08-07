@@ -38,6 +38,11 @@ public abstract class Bytes implements Comparable<Bytes> {
   public static Bytes EMPTY = wrap(new byte[0]);
 
   private Integer hashCode;
+  private int size;
+
+  protected Bytes(final int size) {
+    this.size = size;
+  }
 
   /**
    * Wrap the provided byte array as a {@link Bytes} value.
@@ -515,7 +520,9 @@ public abstract class Bytes implements Comparable<Bytes> {
    *
    * @return The number of bytes this value represents.
    */
-  public abstract int size();
+  public int size() {
+    return size;
+  }
 
   /**
    * Retrieve a byte in this value.

@@ -13,10 +13,12 @@ class ByteBufWrappingBytes extends Bytes {
   protected final ByteBuf byteBuf;
 
   ByteBufWrappingBytes(ByteBuf byteBuf) {
+    super(byteBuf.capacity());
     this.byteBuf = byteBuf;
   }
 
   ByteBufWrappingBytes(ByteBuf byteBuf, int offset, int length) {
+    super(length);
     checkArgument(length >= 0, "Invalid negative length");
     int bufferLength = byteBuf.capacity();
     checkElementIndex(offset, bufferLength + 1);

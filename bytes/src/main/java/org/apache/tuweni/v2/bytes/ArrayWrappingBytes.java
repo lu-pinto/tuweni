@@ -15,13 +15,13 @@ class ArrayWrappingBytes extends Bytes {
 
   protected final byte[] bytes;
   protected final int offset;
-  protected final int length;
 
   ArrayWrappingBytes(byte[] bytes) {
     this(bytes, 0, bytes.length);
   }
 
   ArrayWrappingBytes(byte[] bytes, int offset, int length) {
+    super(length);
     checkArgument(length >= 0, "Invalid negative length");
     if (bytes.length > 0) {
       checkElementIndex(offset, bytes.length);
@@ -35,12 +35,6 @@ class ArrayWrappingBytes extends Bytes {
 
     this.bytes = bytes;
     this.offset = offset;
-    this.length = length;
-  }
-
-  @Override
-  public int size() {
-    return length;
   }
 
   @Override
@@ -53,20 +47,20 @@ class ArrayWrappingBytes extends Bytes {
 
   @Override
   public Bytes slice(int i, int length) {
-    if (i == 0 && length == this.length) {
+    if (i == 0 && length == size()) {
       return this;
     }
     if (length == 0) {
       return EMPTY;
     }
 
-    checkElementIndex(i, this.length);
+    checkElementIndex(i, size());
     checkArgument(
-        i + length <= this.length,
+        i + length <= size(),
         "Provided length %s is too big: the value has size %s and has only %s bytes from %s",
         length,
-        this.length,
-        this.length - i,
+        size(),
+        size() - i,
         i);
 
     return new ArrayWrappingBytes(bytes, offset + i, length);
@@ -78,7 +72,7 @@ class ArrayWrappingBytes extends Bytes {
       return super.commonPrefixLength(other);
     }
     int i = 0;
-    while (i < length && i < o.length && bytes[offset + i] == o.bytes[o.offset + i]) {
+    while (i < size() && i < o.size() && bytes[offset + i] == o.bytes[o.offset + i]) {
       i++;
     }
     return i;
@@ -86,30 +80,30 @@ class ArrayWrappingBytes extends Bytes {
 
   @Override
   public void update(MessageDigest digest) {
-    digest.update(bytes, offset, length);
+    digest.update(bytes, offset, size());
   }
 
   @Override
   public void appendTo(ByteBuffer byteBuffer) {
-    byteBuffer.put(bytes, offset, length);
+    byteBuffer.put(bytes, offset, size());
   }
 
   @Override
   public MutableBytes mutableCopy() {
-    return MutableBytes.fromArray(bytes, offset, length);
+    return MutableBytes.fromArray(bytes, offset, size());
   }
 
   @Override
   public void appendTo(Buffer buffer) {
-    buffer.appendBytes(bytes, offset, length);
+    buffer.appendBytes(bytes, offset, size());
   }
 
   @Override
   public byte[] toArrayUnsafe() {
-    if (offset == 0 && length == bytes.length) {
+    if (offset == 0 && size() == bytes.length) {
       return bytes;
     }
-    return Arrays.copyOfRange(bytes, offset, offset + length);
+    return Arrays.copyOfRange(bytes, offset, offset + size());
   }
 
   @Override
@@ -140,7 +134,7 @@ class ArrayWrappingBytes extends Bytes {
       return false;
     }
 
-    for (int i = 0; i < length; i++) {
+    for (int i = 0; i < size(); i++) {
       if (bytes[i + offset] != other.get(i)) {
         return false;
       }

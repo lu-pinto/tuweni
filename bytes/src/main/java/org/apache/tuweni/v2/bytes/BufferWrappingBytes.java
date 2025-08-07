@@ -12,10 +12,12 @@ class BufferWrappingBytes extends Bytes {
   protected final Buffer buffer;
 
   BufferWrappingBytes(Buffer buffer) {
+    super(buffer.length());
     this.buffer = buffer;
   }
 
   BufferWrappingBytes(Buffer buffer, int offset, int length) {
+    super(length);
     checkArgument(length >= 0, "Invalid negative length");
     int bufferLength = buffer.length();
     checkElementIndex(offset, bufferLength + 1);
@@ -32,11 +34,6 @@ class BufferWrappingBytes extends Bytes {
     } else {
       this.buffer = buffer.slice(offset, offset + length);
     }
-  }
-
-  @Override
-  public int size() {
-    return buffer.length();
   }
 
   @Override

@@ -11,11 +11,10 @@ import java.util.List;
 final class ConcatenatedBytes extends Bytes {
 
   private final Bytes[] values;
-  private final int size;
 
   private ConcatenatedBytes(Bytes[] values, int totalSize) {
+    super(totalSize);
     this.values = values;
-    this.size = totalSize;
   }
 
   static Bytes create(Bytes... values) {
@@ -114,13 +113,8 @@ final class ConcatenatedBytes extends Bytes {
   }
 
   @Override
-  public int size() {
-    return size;
-  }
-
-  @Override
   public byte get(int i) {
-    checkElementIndex(i, size);
+    checkElementIndex(i, size());
     for (Bytes value : values) {
       int vSize = value.size();
       if (i < vSize) {
@@ -133,20 +127,20 @@ final class ConcatenatedBytes extends Bytes {
 
   @Override
   public Bytes slice(int offset, int length) {
-    if (offset == 0 && length == size) {
+    if (offset == 0 && length == size()) {
       return this;
     }
     if (length == 0) {
       return EMPTY;
     }
 
-    checkElementIndex(offset, size);
+    checkElementIndex(offset, size());
     checkArgument(
-        (offset + length) <= size,
+        (offset + length) <= size(),
         "Provided length %s is too large: the value has size %s and has only %s bytes from %s",
         length,
-        size,
-        size - offset,
+        size(),
+        size() - offset,
         offset);
 
     int startIndex = 0;
@@ -199,7 +193,7 @@ final class ConcatenatedBytes extends Bytes {
 
   @Override
   public byte[] toArrayUnsafe() {
-    byte[] bytesArray = new byte[size];
+    byte[] bytesArray = new byte[size()];
     int offset = 0;
     for (Bytes value : values) {
       System.arraycopy(value.toArrayUnsafe(), 0, bytesArray, offset, value.size());

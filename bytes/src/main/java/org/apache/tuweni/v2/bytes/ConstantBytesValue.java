@@ -10,17 +10,11 @@ import java.util.Arrays;
  */
 class ConstantBytesValue extends Bytes {
 
-  private final int size;
   private final byte value;
 
   ConstantBytesValue(byte b, int size) {
+    super(size);
     this.value = b;
-    this.size = size;
-  }
-
-  @Override
-  public int size() {
-    return this.size;
   }
 
   @Override
@@ -30,7 +24,7 @@ class ConstantBytesValue extends Bytes {
 
   @Override
   public Bytes slice(int i, int length) {
-    if (length == size) {
+    if (length == size()) {
       return this;
     }
     return new ConstantBytesValue(this.value, length);
@@ -62,14 +56,14 @@ class ConstantBytesValue extends Bytes {
 
   @Override
   public MutableBytes mutableCopy() {
-    MutableBytes mutableBytes = MutableBytes.create(size);
+    MutableBytes mutableBytes = MutableBytes.create(size());
     mutableBytes.fill(value);
     return mutableBytes;
   }
 
   @Override
   public byte[] toArrayUnsafe() {
-    byte[] array = new byte[size];
+    byte[] array = new byte[size()];
     Arrays.fill(array, value);
     return array;
   }

@@ -118,6 +118,7 @@ public final class UInt64 extends Bytes {
   }
 
   private UInt64(long value) {
+    super(8);
     this.value = value;
   }
 
@@ -341,11 +342,6 @@ public final class UInt64 extends Bytes {
 
   public boolean fitsLong() {
     return this.value >= 0;
-  }
-
-  @Override
-  public int size() {
-    return 8;
   }
 
   @Override
