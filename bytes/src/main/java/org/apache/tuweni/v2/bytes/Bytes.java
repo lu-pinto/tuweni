@@ -37,7 +37,7 @@ public abstract class Bytes implements Comparable<Bytes> {
   /** The empty value (with 0 bytes). */
   public static Bytes EMPTY = wrap(new byte[0]);
 
-  private Integer hashCode;
+  protected Integer hashCode;
   private int size;
 
   protected Bytes(final int size) {

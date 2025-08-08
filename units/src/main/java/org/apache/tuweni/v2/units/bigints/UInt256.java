@@ -50,7 +50,6 @@ public final class UInt256 extends Bytes {
 
   // The unsigned int components of the value
   private final int[] ints;
-  private Integer hashCode;
 
   /**
    * Return a {@code UInt256} containing the specified value.
@@ -785,11 +784,12 @@ public final class UInt256 extends Bytes {
   }
 
   @Override
-  public int hashCode() {
-    if (this.hashCode == null) {
-      this.hashCode = computeHashcode();
+  protected int computeHashcode() {
+    int result = 1;
+    for (int i = 0; i < size(); i++) {
+      result = 31 * result + Utils.unpackByte(ints, i);
     }
-    return this.hashCode;
+    return result;
   }
 
   public boolean fitsInt() {

@@ -142,4 +142,13 @@ class ArrayWrappingBytes extends Bytes {
 
     return true;
   }
+
+  @Override
+  protected int computeHashcode() {
+    int result = 1;
+    for (int i = 0; i < size(); i++) {
+      result = 31 * result + bytes[i + offset];
+    }
+    return result;
+  }
 }

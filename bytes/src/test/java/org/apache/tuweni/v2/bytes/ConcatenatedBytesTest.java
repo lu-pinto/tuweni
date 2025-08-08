@@ -63,7 +63,6 @@ class ConcatenatedBytesTest {
   static Stream<Arguments> sliceProvider() {
     return Stream.of(
         Arguments.of("0x", 4, 0),
-        Arguments.of("0x0123456789abcdef0123456789abcdef", 0, 16),
         Arguments.of("0x01234567", 0, 4),
         Arguments.of("0x0123", 0, 2),
         Arguments.of("0x2345", 1, 2),
@@ -75,7 +74,9 @@ class ConcatenatedBytesTest {
         Arguments.of("0x456789abcdef", 10, 6),
         Arguments.of("0x89abcdef", 12, 4),
         Arguments.of("0xabcd", 13, 2),
-        Arguments.of("0x0123456789abcdef0123456789abcd", 0, 15));
+        Arguments.of("0x0123456789abcdef0123456789ab", 0, 14),
+        Arguments.of("0x0123456789abcdef0123456789abcd", 0, 15),
+        Arguments.of("0x0123456789abcdef0123456789abcdef", 0, 16));
   }
 
   @ParameterizedTest

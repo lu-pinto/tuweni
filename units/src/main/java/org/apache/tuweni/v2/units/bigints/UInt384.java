@@ -644,7 +644,7 @@ public final class UInt384 extends Bytes {
   }
 
   @Override
-  public int hashCode() {
+  public int computeHashcode() {
     int result = 1;
     for (int i = 0; i < INTS_SIZE; ++i) {
       result = 31 * result + this.ints[i];

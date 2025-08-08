@@ -29,7 +29,7 @@ final class ConcatenatedBytes extends Bytes {
     int totalSize = 0;
 
     for (Bytes value : values) {
-      int size = value == null ? 0 : value.size();
+      int size = (value == null ? 0 : value.size());
       try {
         totalSize = Math.addExact(totalSize, size);
       } catch (ArithmeticException e) {
@@ -115,6 +115,10 @@ final class ConcatenatedBytes extends Bytes {
   @Override
   public byte get(int i) {
     checkElementIndex(i, size());
+    return getUnsafe(i);
+  }
+
+  private byte getUnsafe(int i) {
     for (Bytes value : values) {
       int vSize = value.size();
       if (i < vSize) {
@@ -236,5 +240,36 @@ final class ConcatenatedBytes extends Bytes {
         return;
       }
     }
+  }
+
+  @Override
+  public boolean equals(Object obj) {
+    if (obj == this) {
+      return true;
+    }
+    if (!(obj instanceof Bytes other)) {
+      return false;
+    }
+
+    if (this.size() != other.size()) {
+      return false;
+    }
+
+    for (int i = 0; i < size(); i++) {
+      if (getUnsafe(i) != other.get(i)) {
+        return false;
+      }
+    }
+
+    return true;
+  }
+
+  @Override
+  protected int computeHashcode() {
+    int result = 1;
+    for (int i = 0; i < size(); i++) {
+      result = 31 * result + getUnsafe(i);
+    }
+    return result;
   }
 }

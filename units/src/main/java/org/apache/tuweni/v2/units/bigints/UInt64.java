@@ -321,7 +321,7 @@ public final class UInt64 extends Bytes {
   }
 
   @Override
-  public int hashCode() {
+  public int computeHashcode() {
     return Long.hashCode(this.value);
   }
 

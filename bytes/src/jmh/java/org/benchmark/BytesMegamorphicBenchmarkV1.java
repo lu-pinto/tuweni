@@ -26,7 +26,7 @@ import org.openjdk.jmh.annotations.Warmup;
 @OutputTimeUnit(value = TimeUnit.NANOSECONDS)
 public class BytesMegamorphicBenchmarkV1 {
   private static final int N = 4;
-  private static final int FACTOR = 1000;
+  private static final int FACTOR = 1_000;
   private static final Random RANDOM = new Random(23L);
   Bytes[] bytesV1;
 

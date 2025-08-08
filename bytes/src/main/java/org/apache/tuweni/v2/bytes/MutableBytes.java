@@ -787,6 +787,15 @@ public class MutableBytes extends Bytes {
     return true;
   }
 
+  @Override
+  protected int computeHashcode() {
+    int result = 1;
+    for (int i = 0; i < size(); i++) {
+      result = 31 * result + bytesArray[i + offset];
+    }
+    return result;
+  }
+
   /**
    * Parse a hexadecimal string into a {@link MutableBytes} value.
    *

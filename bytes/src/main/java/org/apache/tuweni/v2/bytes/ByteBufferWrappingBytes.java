@@ -123,4 +123,35 @@ class ByteBufferWrappingBytes extends Bytes {
       bytesArray[offset + i] = (byte) (byteBuffer.get(this.offset + i) ^ bytesArray[offset + i]);
     }
   }
+
+  @Override
+  public boolean equals(Object obj) {
+    if (obj == this) {
+      return true;
+    }
+    if (!(obj instanceof Bytes other)) {
+      return false;
+    }
+
+    if (this.size() != other.size()) {
+      return false;
+    }
+
+    for (int i = 0; i < size(); i++) {
+      if (byteBuffer.get(offset + i) != other.get(i)) {
+        return false;
+      }
+    }
+
+    return true;
+  }
+
+  @Override
+  protected int computeHashcode() {
+    int result = 1;
+    for (int i = 0; i < size(); i++) {
+      result = 31 * result + byteBuffer.get(offset + i);
+    }
+    return result;
+  }
 }

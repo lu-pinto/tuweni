@@ -67,4 +67,35 @@ class ConstantBytesValue extends Bytes {
     Arrays.fill(array, value);
     return array;
   }
+
+  @Override
+  public boolean equals(Object obj) {
+    if (obj == this) {
+      return true;
+    }
+    if (!(obj instanceof Bytes other)) {
+      return false;
+    }
+
+    if (this.size() != other.size()) {
+      return false;
+    }
+
+    for (int i = 0; i < size(); i++) {
+      if (value != other.get(i)) {
+        return false;
+      }
+    }
+
+    return true;
+  }
+
+  @Override
+  protected int computeHashcode() {
+    int result = 1;
+    for (int i = 0; i < size(); i++) {
+      result = 31 * result + value;
+    }
+    return result;
+  }
 }
