@@ -697,38 +697,41 @@ public interface Bytes extends Comparable<Bytes> {
    * @throws IllegalArgumentException if {@code size() > 4}.
    */
   default int toInt(ByteOrder order) {
-    int size = size();
-    checkArgument(size <= 4, "Value of size %s has more than 4 bytes", size());
-    if (size == 0) {
+    final int numberZeros =
+        order == BIG_ENDIAN ? numberOfLeadingZeroBytes() : numberOfTrailingZeroBytes();
+    final int size = size();
+    final int trmSize = size - numberZeros;
+    checkArgument(trmSize <= 4, "Value of size %s has more than 4 bytes", trmSize);
+    if (trmSize == 0) {
       return 0;
     }
     if (order == BIG_ENDIAN) {
       int i = size;
       int value = ((int) get(--i) & 0xFF);
-      if (i == 0) {
+      if (i - numberZeros == 0) {
         return value;
       }
       value |= ((int) get(--i) & 0xFF) << 8;
-      if (i == 0) {
+      if (i - numberZeros == 0) {
         return value;
       }
       value |= ((int) get(--i) & 0xFF) << 16;
-      if (i == 0) {
+      if (i - numberZeros == 0) {
         return value;
       }
       return value | ((int) get(--i) & 0xFF) << 24;
     } else {
       int i = 0;
       int value = ((int) get(i) & 0xFF);
-      if (++i == size) {
+      if (++i == trmSize) {
         return value;
       }
       value |= ((int) get(i++) & 0xFF) << 8;
-      if (i == size) {
+      if (i == trmSize) {
         return value;
       }
       value |= ((int) get(i++) & 0xFF) << 16;
-      if (i == size) {
+      if (i == trmSize) {
         return value;
       }
       return value | ((int) get(i) & 0xFF) << 24;
@@ -816,35 +819,38 @@ public interface Bytes extends Comparable<Bytes> {
    * @throws IllegalArgumentException if {@code size() > 8}.
    */
   default long toLong(ByteOrder order) {
-    int size = size();
-    checkArgument(size <= 8, "Value of size %s has more than 8 bytes", size());
-    if (size == 0) {
+    final int numberZeros =
+        order == BIG_ENDIAN ? numberOfLeadingZeroBytes() : numberOfTrailingZeroBytes();
+    final int size = size();
+    final int trmSize = size - numberZeros;
+    checkArgument(trmSize <= 8, "Value of size %s has more than 8 bytes", trmSize);
+    if (trmSize == 0) {
       return 0;
     }
     if (order == BIG_ENDIAN) {
       int i = size;
       long value = ((long) get(--i) & 0xFF);
-      if (i == 0) {
+      if (i - numberZeros == 0) {
         return value;
       }
       value |= ((long) get(--i) & 0xFF) << 8;
-      if (i == 0) {
+      if (i - numberZeros == 0) {
         return value;
       }
       value |= ((long) get(--i) & 0xFF) << 16;
-      if (i == 0) {
+      if (i - numberZeros == 0) {
         return value;
       }
       value |= ((long) get(--i) & 0xFF) << 24;
-      if (i == 0) {
+      if (i - numberZeros == 0) {
         return value;
       }
       value |= ((long) get(--i) & 0xFF) << 32;
-      if (i == 0) {
+      if (i - numberZeros == 0) {
         return value;
       }
       value |= ((long) get(--i) & 0xFF) << 40;
-      if (i == 0) {
+      if (i - numberZeros == 0) {
         return value;
       }
       value |= ((long) get(--i) & 0xFF) << 48;
@@ -855,31 +861,31 @@ public interface Bytes extends Comparable<Bytes> {
     } else {
       int i = 0;
       long value = ((long) get(i) & 0xFF);
-      if (++i == size) {
+      if (++i == trmSize) {
         return value;
       }
       value |= ((long) get(i) & 0xFF) << 8;
-      if (++i == size) {
+      if (++i == trmSize) {
         return value;
       }
       value |= ((long) get(i) & 0xFF) << 16;
-      if (++i == size) {
+      if (++i == trmSize) {
         return value;
       }
       value |= ((long) get(i) & 0xFF) << 24;
-      if (++i == size) {
+      if (++i == trmSize) {
         return value;
       }
       value |= ((long) get(i) & 0xFF) << 32;
-      if (++i == size) {
+      if (++i == trmSize) {
         return value;
       }
       value |= ((long) get(i) & 0xFF) << 40;
-      if (++i == size) {
+      if (++i == trmSize) {
         return value;
       }
       value |= ((long) get(i) & 0xFF) << 48;
-      if (++i == size) {
+      if (++i == trmSize) {
         return value;
       }
       return value | ((long) get(i) & 0xFF) << 56;
