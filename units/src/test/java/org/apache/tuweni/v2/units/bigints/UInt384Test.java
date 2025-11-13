@@ -6,6 +6,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import org.apache.tuweni.v2.bytes.Bytes;
+import org.apache.tuweni.v2.bytes.Bytes48;
 
 import java.math.BigInteger;
 import java.util.stream.Stream;
@@ -662,6 +663,27 @@ class UInt384Test {
   }
 
   @ParameterizedTest
+  @MethodSource("andProviderBytes48")
+  void andBytes48(UInt384 v1, Bytes48 v2, UInt384 expected) {
+    assertValueEquals(expected, v1.and(v2));
+  }
+
+  @SuppressWarnings("UnusedMethod")
+  private static Stream<Arguments> andProviderBytes48() {
+    return Stream.of(
+        Arguments.of(
+            hv("0x00000000000000000000000000000000FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF"),
+            Bytes48.wrapHexString(
+                "0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF00000000000000000000000000000000"),
+            hv("0x0000000000000000000000000000000000000000000000000000000000000000")),
+        Arguments.of(
+            hv("0x000000000000000000000000000000FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF"),
+            Bytes48.wrapHexString(
+                "0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF00000000000000000000000000000000"),
+            hv("0x000000000000000000000000000000FF00000000000000000000000000000000")));
+  }
+
+  @ParameterizedTest
   @MethodSource("orProvider")
   void or(UInt384 v1, UInt384 v2, UInt384 expected) {
     assertValueEquals(expected, v1.or(v2));
@@ -685,6 +707,32 @@ class UInt384Test {
   }
 
   @ParameterizedTest
+  @MethodSource("orProviderBytes48")
+  void orBytes48(UInt384 v1, Bytes48 v2, UInt384 expected) {
+    assertValueEquals(expected, v1.or(v2));
+  }
+
+  @SuppressWarnings("UnusedMethod")
+  private static Stream<Arguments> orProviderBytes48() {
+    return Stream.of(
+        Arguments.of(
+            hv("0x00000000000000000000000000000000FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF"),
+            Bytes48.wrapHexString(
+                "0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF00000000000000000000000000000000"),
+            hv("0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF")),
+        Arguments.of(
+            hv("0x000000000000000000000000000000FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF"),
+            Bytes48.wrapHexString(
+                "0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF00000000000000000000000000000000"),
+            hv("0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF")),
+        Arguments.of(
+            hv("0x0000000000000000000000000000000000FFFFFFFFFFFFFFFFFFFFFFFFFFFFFF"),
+            Bytes48.wrapHexString(
+                "0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF00000000000000000000000000000000"),
+            hv("0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF00FFFFFFFFFFFFFFFFFFFFFFFFFFFFFF")));
+  }
+
+  @ParameterizedTest
   @MethodSource("xorProvider")
   void xor(UInt384 v1, UInt384 v2, UInt384 expected) {
     assertValueEquals(expected, v1.xor(v2));
@@ -704,6 +752,32 @@ class UInt384Test {
         Arguments.of(
             hv("0x000000000000000000000000000000FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF"),
             hv("0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF00000000000000000000000000000000"),
+            hv("0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF00FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF")));
+  }
+
+  @ParameterizedTest
+  @MethodSource("xorProviderBytes48")
+  void xorBytes48(UInt384 v1, Bytes48 v2, UInt384 expected) {
+    assertValueEquals(expected, v1.xor(v2));
+  }
+
+  @SuppressWarnings("UnusedMethod")
+  private static Stream<Arguments> xorProviderBytes48() {
+    return Stream.of(
+        Arguments.of(
+            hv("0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF"),
+            Bytes48.wrapHexString(
+                "0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF"),
+            hv("0x0000000000000000000000000000000000000000000000000000000000000000")),
+        Arguments.of(
+            hv("0x00000000000000000000000000000000FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF"),
+            Bytes48.wrapHexString(
+                "0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF00000000000000000000000000000000"),
+            hv("0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF")),
+        Arguments.of(
+            hv("0x000000000000000000000000000000FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF"),
+            Bytes48.wrapHexString(
+                "0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF00000000000000000000000000000000"),
             hv("0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF00FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF")));
   }
 

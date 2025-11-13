@@ -706,6 +706,27 @@ class UInt256Test {
   }
 
   @ParameterizedTest
+  @MethodSource("andProviderBytes32")
+  void andBytes32(UInt256 v1, Bytes32 v2, UInt256 expected) {
+    assertValueEquals(expected, v1.and(v2));
+  }
+
+  @SuppressWarnings("UnusedMethod")
+  private static Stream<Arguments> andProviderBytes32() {
+    return Stream.of(
+        Arguments.of(
+            hv("0x00000000000000000000000000000000FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF"),
+            Bytes32.wrapHexString(
+                "0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF00000000000000000000000000000000"),
+            hv("0x0000000000000000000000000000000000000000000000000000000000000000")),
+        Arguments.of(
+            hv("0x000000000000000000000000000000FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF"),
+            Bytes32.wrapHexString(
+                "0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF00000000000000000000000000000000"),
+            hv("0x000000000000000000000000000000FF00000000000000000000000000000000")));
+  }
+
+  @ParameterizedTest
   @MethodSource("orProvider")
   void or(UInt256 v1, UInt256 v2, UInt256 expected) {
     assertValueEquals(expected, v1.or(v2));
@@ -729,6 +750,32 @@ class UInt256Test {
   }
 
   @ParameterizedTest
+  @MethodSource("orProviderBytes32")
+  void orBytes32(UInt256 v1, Bytes32 v2, UInt256 expected) {
+    assertValueEquals(expected, v1.or(v2));
+  }
+
+  @SuppressWarnings("UnusedMethod")
+  private static Stream<Arguments> orProviderBytes32() {
+    return Stream.of(
+        Arguments.of(
+            hv("0x00000000000000000000000000000000FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF"),
+            Bytes32.wrapHexString(
+                "0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF00000000000000000000000000000000"),
+            hv("0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF")),
+        Arguments.of(
+            hv("0x000000000000000000000000000000FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF"),
+            Bytes32.wrapHexString(
+                "0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF00000000000000000000000000000000"),
+            hv("0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF")),
+        Arguments.of(
+            hv("0x0000000000000000000000000000000000FFFFFFFFFFFFFFFFFFFFFFFFFFFFFF"),
+            Bytes32.wrapHexString(
+                "0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF00000000000000000000000000000000"),
+            hv("0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF00FFFFFFFFFFFFFFFFFFFFFFFFFFFFFF")));
+  }
+
+  @ParameterizedTest
   @MethodSource("xorProvider")
   void xor(UInt256 v1, UInt256 v2, UInt256 expected) {
     assertValueEquals(expected, v1.xor(v2));
@@ -748,6 +795,32 @@ class UInt256Test {
         Arguments.of(
             hv("0x000000000000000000000000000000FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF"),
             hv("0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF00000000000000000000000000000000"),
+            hv("0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF00FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF")));
+  }
+
+  @ParameterizedTest
+  @MethodSource("xorProviderBytes32")
+  void xorBytes32(UInt256 v1, Bytes32 v2, UInt256 expected) {
+    assertValueEquals(expected, v1.xor(v2));
+  }
+
+  @SuppressWarnings("UnusedMethod")
+  private static Stream<Arguments> xorProviderBytes32() {
+    return Stream.of(
+        Arguments.of(
+            hv("0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF"),
+            Bytes32.wrapHexString(
+                "0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF"),
+            hv("0x0000000000000000000000000000000000000000000000000000000000000000")),
+        Arguments.of(
+            hv("0x00000000000000000000000000000000FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF"),
+            Bytes32.wrapHexString(
+                "0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF00000000000000000000000000000000"),
+            hv("0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF")),
+        Arguments.of(
+            hv("0x000000000000000000000000000000FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF"),
+            Bytes32.wrapHexString(
+                "0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF00000000000000000000000000000000"),
             hv("0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF00FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF")));
   }
 

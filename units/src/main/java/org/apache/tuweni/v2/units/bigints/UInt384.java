@@ -452,13 +452,13 @@ public final class UInt384 extends Bytes {
    * @param bytes the bytes to perform the operation with
    * @return the result of a bit-wise AND
    */
-  public UInt384 and(Bytes bytes) {
+  public UInt384 and(Bytes48 bytes) {
     int[] result = new int[INTS_SIZE];
-    for (int i = INTS_SIZE - 1, j = 28; i >= 0; --i, j -= 4) {
+    for (int i = INTS_SIZE - 1, j = 44; i >= 0; --i, j -= 4) {
       int other = ((int) bytes.get(j) & 0xFF) << 24;
       other |= ((int) bytes.get(j + 1) & 0xFF) << 16;
-      other |= ((int) bytes.get(i + 2) & 0xFF) << 8;
-      other |= ((int) bytes.get(i + 3) & 0xFF);
+      other |= ((int) bytes.get(j + 2) & 0xFF) << 8;
+      other |= ((int) bytes.get(j + 3) & 0xFF);
       result[i] = this.ints[i] & other;
     }
     return new UInt384(result);
@@ -484,13 +484,14 @@ public final class UInt384 extends Bytes {
    * @param bytes the bytes to perform the operation with
    * @return the result of a bit-wise OR
    */
-  public UInt384 or(Bytes bytes) {
+  public UInt384 or(Bytes48 bytes) {
     int[] result = new int[INTS_SIZE];
-    for (int i = INTS_SIZE - 1, j = 28; i >= 0; --i, j -= 4) {
-      result[i] = this.ints[i] | (((int) bytes.get(j) & 0xFF) << 24);
-      result[i] |= ((int) bytes.get(j + 1) & 0xFF) << 16;
-      result[i] |= ((int) bytes.get(j + 2) & 0xFF) << 8;
-      result[i] |= ((int) bytes.get(j + 3) & 0xFF);
+    for (int i = INTS_SIZE - 1, j = 44; i >= 0; --i, j -= 4) {
+      int other = ((int) bytes.get(j) & 0xFF) << 24;
+      other |= ((int) bytes.get(j + 1) & 0xFF) << 16;
+      other |= ((int) bytes.get(j + 2) & 0xFF) << 8;
+      other |= ((int) bytes.get(j + 3) & 0xFF);
+      result[i] = this.ints[i] | other;
     }
     return new UInt384(result);
   }
@@ -515,13 +516,14 @@ public final class UInt384 extends Bytes {
    * @param bytes the bytes to perform the operation with
    * @return the result of a bit-wise XOR
    */
-  public UInt384 xor(Bytes bytes) {
+  public UInt384 xor(Bytes48 bytes) {
     int[] result = new int[INTS_SIZE];
-    for (int i = INTS_SIZE - 1, j = 28; i >= 0; --i, j -= 4) {
-      result[i] = this.ints[i] ^ (((int) bytes.get(j) & 0xFF) << 24);
-      result[i] ^= ((int) bytes.get(j + 1) & 0xFF) << 16;
-      result[i] ^= ((int) bytes.get(j + 2) & 0xFF) << 8;
-      result[i] ^= ((int) bytes.get(j + 3) & 0xFF);
+    for (int i = INTS_SIZE - 1, j = 44; i >= 0; --i, j -= 4) {
+      int other = ((int) bytes.get(j) & 0xFF) << 24;
+      other |= ((int) bytes.get(j + 1) & 0xFF) << 16;
+      other |= ((int) bytes.get(j + 2) & 0xFF) << 8;
+      other |= ((int) bytes.get(j + 3) & 0xFF);
+      result[i] = this.ints[i] ^ other;
     }
     return new UInt384(result);
   }

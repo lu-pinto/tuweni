@@ -606,8 +606,8 @@ public final class UInt256 extends Bytes {
     for (int i = INTS_SIZE - 1, j = 28; i >= 0; --i, j -= 4) {
       int other = ((int) bytes.get(j) & 0xFF) << 24;
       other |= ((int) bytes.get(j + 1) & 0xFF) << 16;
-      other |= ((int) bytes.get(i + 2) & 0xFF) << 8;
-      other |= ((int) bytes.get(i + 3) & 0xFF);
+      other |= ((int) bytes.get(j + 2) & 0xFF) << 8;
+      other |= ((int) bytes.get(j + 3) & 0xFF);
       result[i] = this.ints[i] & other;
     }
     return new UInt256(result);
@@ -636,10 +636,11 @@ public final class UInt256 extends Bytes {
   public UInt256 or(Bytes32 bytes) {
     int[] result = new int[INTS_SIZE];
     for (int i = INTS_SIZE - 1, j = 28; i >= 0; --i, j -= 4) {
-      result[i] = this.ints[i] | (((int) bytes.get(j) & 0xFF) << 24);
-      result[i] |= ((int) bytes.get(j + 1) & 0xFF) << 16;
-      result[i] |= ((int) bytes.get(j + 2) & 0xFF) << 8;
-      result[i] |= ((int) bytes.get(j + 3) & 0xFF);
+      int other = ((int) bytes.get(j) & 0xFF) << 24;
+      other |= ((int) bytes.get(j + 1) & 0xFF) << 16;
+      other |= ((int) bytes.get(j + 2) & 0xFF) << 8;
+      other |= ((int) bytes.get(j + 3) & 0xFF);
+      result[i] = this.ints[i] | other;
     }
     return new UInt256(result);
   }
@@ -667,10 +668,11 @@ public final class UInt256 extends Bytes {
   public UInt256 xor(Bytes32 bytes) {
     int[] result = new int[INTS_SIZE];
     for (int i = INTS_SIZE - 1, j = 28; i >= 0; --i, j -= 4) {
-      result[i] = this.ints[i] ^ (((int) bytes.get(j) & 0xFF) << 24);
-      result[i] ^= ((int) bytes.get(j + 1) & 0xFF) << 16;
-      result[i] ^= ((int) bytes.get(j + 2) & 0xFF) << 8;
-      result[i] ^= ((int) bytes.get(j + 3) & 0xFF);
+      int other = ((int) bytes.get(j) & 0xFF) << 24;
+      other |= ((int) bytes.get(j + 1) & 0xFF) << 16;
+      other |= ((int) bytes.get(j + 2) & 0xFF) << 8;
+      other |= ((int) bytes.get(j + 3) & 0xFF);
+      result[i] = this.ints[i] ^ other;
     }
     return new UInt256(result);
   }
