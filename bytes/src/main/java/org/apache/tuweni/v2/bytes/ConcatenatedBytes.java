@@ -2,8 +2,8 @@
 // SPDX-License-Identifier: Apache-2.0
 package org.apache.tuweni.v2.bytes;
 
-import static org.apache.tuweni.v2.bytes.Utils.checkArgument;
 import static org.apache.tuweni.v2.bytes.Utils.checkElementIndex;
+import static org.apache.tuweni.v2.bytes.Utils.checkLength;
 
 import java.security.MessageDigest;
 import java.util.List;
@@ -139,13 +139,7 @@ final class ConcatenatedBytes extends Bytes {
     }
 
     checkElementIndex(offset, size());
-    checkArgument(
-        (offset + length) <= size(),
-        "Provided length %s is too large: the value has size %s and has only %s bytes from %s",
-        length,
-        size(),
-        size() - offset,
-        offset);
+    checkLength(size(), offset, length);
 
     int startIndex = 0;
     for (int i = 0; i < values.length; i++) {

@@ -5,6 +5,7 @@ package org.apache.tuweni.v2.bytes;
 import static java.lang.String.format;
 import static org.apache.tuweni.v2.bytes.Utils.checkArgument;
 import static org.apache.tuweni.v2.bytes.Utils.checkElementIndex;
+import static org.apache.tuweni.v2.bytes.Utils.checkLength;
 import static org.apache.tuweni.v2.bytes.Utils.checkNotNull;
 
 import java.nio.ByteBuffer;
@@ -91,12 +92,7 @@ public class MutableBytes extends Bytes {
     if (value.length > 0) {
       checkElementIndex(offset, value.length);
     }
-    checkArgument(
-        offset + length <= value.length,
-        "Provided length %s is too big: the value has only %s bytes from offset %s",
-        length,
-        value.length - offset,
-        offset);
+    checkLength(value.length, offset, length);
     if (length == 0) {
       return MutableBytes.create(0);
     }
@@ -140,12 +136,7 @@ public class MutableBytes extends Bytes {
     if (buffer.length() > 0) {
       checkElementIndex(offset, buffer.length());
     }
-    checkArgument(
-        offset + length <= buffer.length(),
-        "Provided length %s is too big: the value has only %s bytes from offset %s",
-        length,
-        buffer.length() - offset,
-        offset);
+    checkLength(buffer.length(), offset, length);
     if (length == 0) {
       return MutableBytes.create(0);
     }
@@ -188,15 +179,11 @@ public class MutableBytes extends Bytes {
   public static MutableBytes fromByteBuf(ByteBuf byteBuf, int offset, int length) {
     checkNotNull(byteBuf);
     checkArgument(length >= 0, "Invalid negative length");
-    if (byteBuf.capacity() > 0) {
+    final int byteBufLength = byteBuf.capacity();
+    if (byteBufLength > 0) {
       checkElementIndex(offset, byteBuf.capacity());
     }
-    checkArgument(
-        offset + length <= byteBuf.capacity(),
-        "Provided length %s is too big: the value has only %s bytes from offset %s",
-        length,
-        byteBuf.capacity() - offset,
-        offset);
+    checkLength(byteBufLength, offset, length);
     if (length == 0) {
       return MutableBytes.create(0);
     }
@@ -241,15 +228,11 @@ public class MutableBytes extends Bytes {
   public static MutableBytes fromByteBuffer(ByteBuffer byteBuffer, int offset, int length) {
     checkNotNull(byteBuffer);
     checkArgument(length >= 0, "Invalid negative length");
-    if (byteBuffer.limit() > 0) {
+    final int byteBufferLength = byteBuffer.limit();
+    if (byteBufferLength > 0) {
       checkElementIndex(offset, byteBuffer.limit());
     }
-    checkArgument(
-        offset + length <= byteBuffer.limit(),
-        "Provided length %s is too big: the value has only %s bytes from offset %s",
-        length,
-        byteBuffer.limit() - offset,
-        offset);
+    checkLength(byteBufferLength, offset, length);
     if (length == 0) {
       return MutableBytes.create(0);
     }
@@ -301,12 +284,7 @@ public class MutableBytes extends Bytes {
       return;
     }
     checkElementIndex(index, length);
-    checkArgument(
-        index + bytes.size() <= length,
-        "Provided length %s is too big: the value has only %s bytes from offset %s",
-        bytes.size(),
-        length - index,
-        index);
+    checkLength(bytesArray.length, index + offset, bytes.size());
     for (int i = 0; i < bytes.size(); i++) {
       set(i + index + offset, bytes.get(i));
     }
@@ -326,12 +304,7 @@ public class MutableBytes extends Bytes {
       return;
     }
     checkElementIndex(index, length);
-    checkArgument(
-        index + bytes.length <= length,
-        "Provided length %s is too big: the value has only %s bytes from offset %s",
-        bytes.length,
-        length - index,
-        index);
+    checkLength(bytesArray.length, index, bytes.length);
     for (int i = 0; i < bytes.length; i++) {
       set(i + index + offset, bytes[i]);
     }
@@ -710,21 +683,16 @@ public class MutableBytes extends Bytes {
   }
 
   @Override
-  public Bytes slice(int offset, int length) {
+  public Bytes slice(int i, int length) {
     checkArgument(length >= 0, "Invalid negative length");
-    if (this.length > 0) {
-      checkElementIndex(offset, this.length);
+    if (bytesArray.length > 0) {
+      checkElementIndex(offset + i, bytesArray.length);
     }
-    checkArgument(
-        offset + length <= this.length,
-        "Provided length %s is too big: the value has only %s bytes from offset %s",
-        length,
-        this.length - offset,
-        offset);
+    checkLength(bytesArray.length, offset + i, length);
     if (length == this.length) {
       return this;
     }
-    return new ArrayWrappingBytes(this.bytesArray, offset, length);
+    return new ArrayWrappingBytes(this.bytesArray, offset + i, length);
   }
 
   @Override

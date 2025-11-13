@@ -6,6 +6,7 @@ import static java.lang.String.format;
 import static java.nio.ByteOrder.BIG_ENDIAN;
 import static org.apache.tuweni.v2.bytes.Utils.checkArgument;
 import static org.apache.tuweni.v2.bytes.Utils.checkElementIndex;
+import static org.apache.tuweni.v2.bytes.Utils.checkLength;
 import static org.apache.tuweni.v2.bytes.Utils.checkNotNull;
 
 import java.io.IOException;
@@ -75,6 +76,11 @@ public abstract class Bytes implements Comparable<Bytes> {
    */
   public static Bytes wrap(byte[] value, int offset, int length) {
     checkNotNull(value);
+    checkArgument(length >= 0, "Invalid negative length");
+    if (value.length > 0) {
+      checkElementIndex(offset, value.length);
+    }
+    checkLength(value.length, offset, length);
     return new ArrayWrappingBytes(value, offset, length);
   }
 
@@ -141,6 +147,10 @@ public abstract class Bytes implements Comparable<Bytes> {
     if (size == 0) {
       return EMPTY;
     }
+    checkArgument(size >= 0, "Invalid negative length");
+    int bufferLength = buffer.length();
+    checkElementIndex(offset, bufferLength + 1);
+    checkLength(bufferLength, offset, size);
     return new BufferWrappingBytes(buffer, offset, size);
   }
 
@@ -179,6 +189,11 @@ public abstract class Bytes implements Comparable<Bytes> {
     if (size == 0) {
       return EMPTY;
     }
+    checkArgument(size >= 0, "Invalid negative length");
+    int bufferLength = byteBuf.capacity();
+    checkElementIndex(offset, bufferLength + 1);
+    checkLength(bufferLength, offset, size);
+
     return new ByteBufWrappingBytes(byteBuf, offset, size);
   }
 
@@ -217,6 +232,12 @@ public abstract class Bytes implements Comparable<Bytes> {
     if (size == 0) {
       return EMPTY;
     }
+    checkArgument(size >= 0, "Invalid negative length");
+    int bufferLength = byteBuffer.capacity();
+    if (bufferLength > 0) {
+      checkElementIndex(offset, bufferLength);
+    }
+    checkLength(bufferLength, offset, size);
     return new ByteBufferWrappingBytes(byteBuffer, offset, size);
   }
 

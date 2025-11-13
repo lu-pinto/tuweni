@@ -246,7 +246,7 @@ abstract class CommonBytesTests {
     Throwable exception =
         assertThrows(IllegalArgumentException.class, () -> h("0x012345").slice(1, 3));
     assertEquals(
-        "Provided length 3 is too big: the value has size 3 and has only 2 bytes from 1",
+        "Provided length 3 is too big: the value has only 2 bytes from offset 1",
         exception.getMessage());
   }
 

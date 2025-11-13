@@ -21,7 +21,7 @@ class Bytes48Test {
   void failsWhenWrappingArrayLargerThan48() {
     Throwable exception =
         assertThrows(IllegalArgumentException.class, () -> Bytes48.wrap(new byte[49]));
-    assertEquals("Expected 48 bytes but got 49", exception.getMessage());
+    assertEquals("Expected 48 bytes from offset 0 but got 49", exception.getMessage());
   }
 
   @Test

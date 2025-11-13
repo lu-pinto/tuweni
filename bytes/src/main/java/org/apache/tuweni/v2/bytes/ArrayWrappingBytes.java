@@ -4,6 +4,7 @@ package org.apache.tuweni.v2.bytes;
 
 import static org.apache.tuweni.v2.bytes.Utils.checkArgument;
 import static org.apache.tuweni.v2.bytes.Utils.checkElementIndex;
+import static org.apache.tuweni.v2.bytes.Utils.checkLength;
 
 import java.nio.ByteBuffer;
 import java.security.MessageDigest;
@@ -16,23 +17,8 @@ class ArrayWrappingBytes extends Bytes {
   protected final byte[] bytes;
   protected final int offset;
 
-  ArrayWrappingBytes(byte[] bytes) {
-    this(bytes, 0, bytes.length);
-  }
-
   ArrayWrappingBytes(byte[] bytes, int offset, int length) {
     super(length);
-    checkArgument(length >= 0, "Invalid negative length");
-    if (bytes.length > 0) {
-      checkElementIndex(offset, bytes.length);
-    }
-    checkArgument(
-        offset + length <= bytes.length,
-        "Provided length %s is too big: the value has only %s bytes from offset %s",
-        length,
-        bytes.length - offset,
-        offset);
-
     this.bytes = bytes;
     this.offset = offset;
   }
@@ -50,18 +36,16 @@ class ArrayWrappingBytes extends Bytes {
     if (i == 0 && length == size()) {
       return this;
     }
+
     if (length == 0) {
       return EMPTY;
     }
 
-    checkElementIndex(i, size());
-    checkArgument(
-        i + length <= size(),
-        "Provided length %s is too big: the value has size %s and has only %s bytes from %s",
-        length,
-        size(),
-        size() - i,
-        i);
+    checkArgument(length > 0, "Invalid negative length");
+    if (bytes.length > 0) {
+      checkElementIndex(offset + i, bytes.length);
+    }
+    checkLength(bytes.length, offset + i, length);
 
     return new ArrayWrappingBytes(bytes, offset + i, length);
   }

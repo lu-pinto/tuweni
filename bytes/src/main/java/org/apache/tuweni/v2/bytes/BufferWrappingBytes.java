@@ -2,13 +2,12 @@
 // SPDX-License-Identifier: Apache-2.0
 package org.apache.tuweni.v2.bytes;
 
-import static org.apache.tuweni.v2.bytes.Utils.checkArgument;
 import static org.apache.tuweni.v2.bytes.Utils.checkElementIndex;
+import static org.apache.tuweni.v2.bytes.Utils.checkLength;
 
 import io.vertx.core.buffer.Buffer;
 
 class BufferWrappingBytes extends Bytes {
-
   protected final Buffer buffer;
 
   BufferWrappingBytes(Buffer buffer) {
@@ -18,18 +17,7 @@ class BufferWrappingBytes extends Bytes {
 
   BufferWrappingBytes(Buffer buffer, int offset, int length) {
     super(length);
-    checkArgument(length >= 0, "Invalid negative length");
-    int bufferLength = buffer.length();
-    checkElementIndex(offset, bufferLength + 1);
-    checkArgument(
-        offset + length <= bufferLength,
-        "Provided length %s is too big: the buffer has size %s and has only %s bytes from %s",
-        length,
-        bufferLength,
-        bufferLength - offset,
-        offset);
-
-    if (offset == 0 && length == bufferLength) {
+    if (offset == 0 && length == buffer.length()) {
       this.buffer = buffer;
     } else {
       this.buffer = buffer.slice(offset, offset + length);
@@ -62,13 +50,7 @@ class BufferWrappingBytes extends Bytes {
     }
 
     checkElementIndex(i, size);
-    checkArgument(
-        i + length <= size,
-        "Provided length %s is too big: the value has size %s and has only %s bytes from %s",
-        length,
-        size,
-        size - i,
-        i);
+    checkLength(size, i, length);
 
     return new BufferWrappingBytes(buffer.slice(i, i + length));
   }

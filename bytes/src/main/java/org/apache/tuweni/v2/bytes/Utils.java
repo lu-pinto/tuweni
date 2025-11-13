@@ -63,6 +63,15 @@ public final class Utils {
     }
   }
 
+  static void checkLength(int arrayLength, int offset, int length) {
+    checkArgument(
+        offset + length <= arrayLength,
+        "Provided length %s is too big: the value has only %s bytes from offset %s",
+        length,
+        arrayLength - offset,
+        offset);
+  }
+
   static void and(
       byte[] sourceBytesArray,
       int sourceOffset,

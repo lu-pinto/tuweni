@@ -3,6 +3,7 @@
 package org.apache.tuweni.v2.bytes;
 
 import static org.apache.tuweni.v2.bytes.Utils.checkArgument;
+import static org.apache.tuweni.v2.bytes.Utils.checkElementIndex;
 import static org.apache.tuweni.v2.bytes.Utils.checkNotNull;
 
 import java.security.SecureRandom;
@@ -65,7 +66,7 @@ public final class Bytes48 extends DelegatingBytes {
    *     (inclusive) to {@code offset + 48} (exclusive).
    * @throws IndexOutOfBoundsException if {@code offset < 0 || (value.length > 0 && offset >=
    *     value.length)}.
-   * @throws IllegalArgumentException if {@code length < 0 || offset + 48 > value.length}.
+   * @throws IllegalArgumentException if {@code value.length - offset != 48}.
    */
   public static Bytes48 wrap(byte[] bytes, int offset) {
     return new Bytes48(fromArray(bytes, offset));
@@ -73,8 +74,12 @@ public final class Bytes48 extends DelegatingBytes {
 
   public static Bytes fromArray(byte[] bytes, int offset) {
     checkNotNull(bytes);
+    if (bytes.length == 0) {
+      return EMPTY;
+    }
+    checkElementIndex(offset, bytes.length);
     checkLength(bytes, offset);
-    return new ArrayWrappingBytes(bytes, offset, bytes.length);
+    return new ArrayWrappingBytes(bytes, offset, SIZE);
   }
 
   /**
@@ -89,6 +94,7 @@ public final class Bytes48 extends DelegatingBytes {
    */
   public static Bytes48 wrap(Bytes value) {
     checkNotNull(value);
+    checkArgument(value.size() == SIZE, "Expected %s bytes but got %s", SIZE, value.size());
     if (value instanceof Bytes48 bytes48) {
       return bytes48;
     }
@@ -221,7 +227,7 @@ public final class Bytes48 extends DelegatingBytes {
 
   private static void checkLength(byte[] bytes, int offset) {
     checkArgument(
-        bytes.length - offset >= SIZE,
+        bytes.length - offset == SIZE,
         "Expected %s bytes from offset %s but got %s",
         SIZE,
         offset,
