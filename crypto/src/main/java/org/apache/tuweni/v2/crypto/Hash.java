@@ -104,7 +104,7 @@ public final class Hash {
       try {
         SHA256Hash.Hash result = SHA256Hash.hash(shaInput);
         try {
-          return SHA256Hash.hash(shaInput).bytesArray();
+          return result.bytesArray();
         } finally {
           result.destroy();
         }
@@ -131,7 +131,7 @@ public final class Hash {
       try {
         SHA256Hash.Hash result = SHA256Hash.hash(shaInput);
         try {
-          return SHA256Hash.hash(shaInput).bytes();
+          return result.bytes();
         } finally {
           result.destroy();
         }
