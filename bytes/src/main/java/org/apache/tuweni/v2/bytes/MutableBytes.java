@@ -16,32 +16,21 @@ import io.vertx.core.buffer.Buffer;
 
 /** A class for doing modifications on a {@link Bytes} value without modifying the original. */
 public class MutableBytes extends Bytes {
-
   private byte[] bytesArray;
-
-  // Use for slicing and avoiding creating a new array
-  private int offset;
-  private int length;
 
   MutableBytes(int size) {
     super(size);
-    this.offset = 0;
-    this.length = size;
-    this.bytesArray = new byte[length];
+    this.bytesArray = new byte[size];
   }
 
   MutableBytes(byte[] bytesArray) {
     super(bytesArray.length);
-    this.offset = 0;
-    this.length = bytesArray.length;
-    this.bytesArray = new byte[length];
-    System.arraycopy(bytesArray, offset, this.bytesArray, 0, length);
+    this.bytesArray = new byte[size];
+    System.arraycopy(bytesArray, 0, this.bytesArray, 0, size);
   }
 
   MutableBytes(byte[] bytesArray, int offset, int length) {
     super(length);
-    this.offset = 0;
-    this.length = length;
     this.bytesArray = new byte[length];
     System.arraycopy(bytesArray, offset, this.bytesArray, 0, length);
   }
@@ -283,10 +272,10 @@ public class MutableBytes extends Bytes {
     if (bytes.isEmpty()) {
       return;
     }
-    checkElementIndex(index, length);
-    checkLength(bytesArray.length, index + offset, bytes.size());
+    checkElementIndex(index, size);
+    checkLength(bytesArray.length, index, bytes.size());
     for (int i = 0; i < bytes.size(); i++) {
-      set(i + index + offset, bytes.get(i));
+      set(i + index, bytes.get(i));
     }
   }
 
@@ -303,10 +292,10 @@ public class MutableBytes extends Bytes {
     if (bytes.length == 0) {
       return;
     }
-    checkElementIndex(index, length);
+    checkElementIndex(index, size);
     checkLength(bytesArray.length, index, bytes.length);
     for (int i = 0; i < bytes.length; i++) {
-      set(i + index + offset, bytes[i]);
+      set(i + index, bytes[i]);
     }
   }
 
@@ -318,15 +307,14 @@ public class MutableBytes extends Bytes {
    * @throws IndexOutOfBoundsException if {@code index < 0} or {@code index > size() - 4}.
    */
   public void setInt(int index, int value) {
-    checkElementIndex(index, length);
-    if (index > (length - 4)) {
+    checkElementIndex(index, size);
+    if (index > (size - 4)) {
       throw new IndexOutOfBoundsException(
           format(
               "Value of size %s has not enough bytes to write a 4 bytes int from index %s",
-              length, index));
+              size, index));
     }
 
-    index += offset;
     set(index++, (byte) (value >>> 24));
     set(index++, (byte) ((value >>> 16) & 0xFF));
     set(index++, (byte) ((value >>> 8) & 0xFF));
@@ -341,15 +329,14 @@ public class MutableBytes extends Bytes {
    * @throws IndexOutOfBoundsException if {@code index < 0} or {@code index > size() - 8}.
    */
   public void setLong(int index, long value) {
-    checkElementIndex(index, length);
-    if (index > (length - 8)) {
+    checkElementIndex(index, size);
+    if (index > (size - 8)) {
       throw new IndexOutOfBoundsException(
           format(
               "Value of length %s has not enough bytes to write a 8 bytes long from index %s",
-              length, index));
+              size, index));
     }
 
-    index += offset;
     set(index++, (byte) (value >>> 56));
     set(index++, (byte) ((value >>> 48) & 0xFF));
     set(index++, (byte) ((value >>> 40) & 0xFF));
@@ -368,14 +355,8 @@ public class MutableBytes extends Bytes {
    * @throws IndexOutOfBoundsException if {@code i < 0} or {i >= size()}.
    */
   public void set(int index, byte b) {
-    checkElementIndex(index, length);
-    if (index > (length - 1)) {
-      throw new IndexOutOfBoundsException(
-          format(
-              "Value of size %s has not enough bytes to write a 4 bytes int from index %s",
-              length, index));
-    }
-    bytesArray[offset + index] = b;
+    checkElementIndex(index, size);
+    bytesArray[index] = b;
   }
 
   /**
@@ -387,7 +368,7 @@ public class MutableBytes extends Bytes {
    * @return This mutable bytes instance.
    */
   public MutableBytes increment() {
-    for (int i = offset + length - 1; i >= offset; --i) {
+    for (int i = size - 1; i >= 0; --i) {
       if (bytesArray[i] == (byte) 0xFF) {
         bytesArray[i] = (byte) 0x00;
       } else {
@@ -408,7 +389,7 @@ public class MutableBytes extends Bytes {
    * @return This mutable bytes instance.
    */
   public MutableBytes decrement() {
-    for (int i = offset + length - 1; i >= offset; --i) {
+    for (int i = size - 1; i >= 0; --i) {
       if (bytesArray[i] == (byte) 0x00) {
         bytesArray[i] = (byte) 0xFF;
       } else {
@@ -427,7 +408,7 @@ public class MutableBytes extends Bytes {
    * @return This mutable bytes instance.
    */
   public MutableBytes fill(byte b) {
-    for (int i = offset; i < offset + length; i++) {
+    for (int i = 0; i < size; i++) {
       bytesArray[i] = b;
     }
     return this;
@@ -449,12 +430,11 @@ public class MutableBytes extends Bytes {
    * @return This mutable bytes instance.
    */
   public MutableBytes reverse() {
-    byte[] reverse = new byte[length];
-    for (int i = 0; i < length; i++) {
-      reverse[length - 1 - i] = bytesArray[i + offset];
+    byte[] reverse = new byte[size];
+    for (int i = 0; i < size; i++) {
+      reverse[size - 1 - i] = bytesArray[i];
     }
     bytesArray = reverse;
-    offset = 0;
     return this;
   }
 
@@ -467,21 +447,20 @@ public class MutableBytes extends Bytes {
   public MutableBytes and(Bytes other) {
     checkNotNull(other);
     int otherSize = other.size();
-    if (length == otherSize) {
-      other.and(bytesArray, offset, length);
+    if (size == otherSize) {
+      other.and(bytesArray, 0, size);
       return this;
     }
 
     int otherOffset = 0;
-    if (length < otherSize) {
+    if (size < otherSize) {
       byte[] newBytesArray = new byte[otherSize];
-      System.arraycopy(bytesArray, offset, newBytesArray, otherSize - length, length);
+      System.arraycopy(bytesArray, 0, newBytesArray, otherSize - size, size);
       bytesArray = newBytesArray;
-      offset = 0;
-      length = otherSize;
+      size = otherSize;
     } else {
-      Arrays.fill(bytesArray, 0, length - otherSize, (byte) 0);
-      otherOffset = offset + (length - otherSize);
+      Arrays.fill(bytesArray, 0, size - otherSize, (byte) 0);
+      otherOffset = size - otherSize;
     }
     other.and(bytesArray, otherOffset, otherSize);
     return this;
@@ -489,7 +468,7 @@ public class MutableBytes extends Bytes {
 
   @Override
   protected void and(byte[] bytesArray, int offset, int length) {
-    Utils.and(this.bytesArray, this.offset, bytesArray, offset, length);
+    Utils.and(this.bytesArray, 0, bytesArray, offset, length);
   }
 
   /**
@@ -501,20 +480,19 @@ public class MutableBytes extends Bytes {
   public MutableBytes or(Bytes other) {
     checkNotNull(other);
     int otherSize = other.size();
-    if (length == otherSize) {
-      other.or(bytesArray, offset, length);
+    if (size == otherSize) {
+      other.or(bytesArray, 0, size);
       return this;
     }
 
     int otherOffset = 0;
-    if (length < otherSize) {
+    if (size < otherSize) {
       byte[] newBytesArray = new byte[otherSize];
-      System.arraycopy(bytesArray, offset, newBytesArray, otherSize - length, length);
+      System.arraycopy(bytesArray, 0, newBytesArray, otherSize - size, size);
       bytesArray = newBytesArray;
-      offset = 0;
-      length = otherSize;
+      size = otherSize;
     } else {
-      otherOffset = offset + (length - otherSize);
+      otherOffset = size - otherSize;
     }
     other.or(bytesArray, otherOffset, otherSize);
     return this;
@@ -522,7 +500,7 @@ public class MutableBytes extends Bytes {
 
   @Override
   protected void or(byte[] bytesArray, int offset, int length) {
-    Utils.or(this.bytesArray, this.offset, bytesArray, offset, length);
+    Utils.or(this.bytesArray, 0, bytesArray, offset, length);
   }
 
   /**
@@ -534,20 +512,19 @@ public class MutableBytes extends Bytes {
   public MutableBytes xor(Bytes other) {
     checkNotNull(other);
     int otherSize = other.size();
-    if (length == otherSize) {
-      other.xor(bytesArray, offset, length);
+    if (size == otherSize) {
+      other.xor(bytesArray, 0, size);
       return this;
     }
 
     int otherOffset = 0;
-    if (length < otherSize) {
+    if (size < otherSize) {
       byte[] newBytesArray = new byte[otherSize];
-      System.arraycopy(bytesArray, offset, newBytesArray, otherSize - length, length);
+      System.arraycopy(bytesArray, 0, newBytesArray, otherSize - size, size);
       bytesArray = newBytesArray;
-      offset = 0;
-      length = otherSize;
+      size = otherSize;
     } else {
-      otherOffset = offset + (length - otherSize);
+      otherOffset = size - otherSize;
     }
     other.xor(bytesArray, otherOffset, otherSize);
     return this;
@@ -555,7 +532,7 @@ public class MutableBytes extends Bytes {
 
   @Override
   protected void xor(byte[] bytesArray, int offset, int length) {
-    Utils.xor(this.bytesArray, this.offset, bytesArray, offset, length);
+    Utils.xor(this.bytesArray, 0, bytesArray, offset, length);
   }
 
   /**
@@ -564,7 +541,7 @@ public class MutableBytes extends Bytes {
    * @return This mutable bytes instance.
    */
   public MutableBytes not() {
-    for (int i = offset; i < offset + length; i++) {
+    for (int i = 0; i < size; i++) {
       bytesArray[i] = (byte) ~bytesArray[i];
     }
     return this;
@@ -581,19 +558,19 @@ public class MutableBytes extends Bytes {
     if (distance == 0) {
       return this;
     }
-    distance = Math.min(distance, length * 8);
+    distance = Math.min(distance, size * 8);
     int byteShift = distance / 8;
     int bitShift = distance % 8;
 
     if (byteShift > 0) {
-      for (int i = offset + length - 1; i >= offset; i--) {
+      for (int i = size - 1; i >= 0; i--) {
         byte previousByte = (i < byteShift) ? 0 : bytesArray[i - byteShift];
         bytesArray[i] = previousByte;
       }
     }
 
     if (bitShift > 0) {
-      for (int i = offset + length - 1; i >= offset; i--) {
+      for (int i = size - 1; i >= 0; i--) {
         byte currentByte = bytesArray[i];
         byte previousByte = (i == 0) ? 0 : bytesArray[i - 1];
         int rightSide = (currentByte & 0XFF) >>> bitShift;
@@ -615,21 +592,21 @@ public class MutableBytes extends Bytes {
     if (distance == 0) {
       return this;
     }
-    distance = Math.min(distance, length * 8);
+    distance = Math.min(distance, size * 8);
     int byteShift = distance / 8;
     int bitShift = distance % 8;
 
     if (byteShift > 0) {
-      for (int i = offset; i < offset + length; i++) {
-        byte nextByte = (i + byteShift < offset + length) ? bytesArray[i + byteShift] : 0;
+      for (int i = 0; i < size; i++) {
+        byte nextByte = (i + byteShift < size) ? bytesArray[i + byteShift] : 0;
         bytesArray[i] = nextByte;
       }
     }
 
     if (bitShift > 0) {
-      for (int i = offset; i < offset + length; i++) {
+      for (int i = 0; i < size; i++) {
         byte currentByte = bytesArray[i];
-        byte nextByte = (i == offset + length - 1) ? 0 : bytesArray[i + 1];
+        byte nextByte = (i == size - 1) ? 0 : bytesArray[i + 1];
         int leftSide = currentByte << bitShift;
         int rightSide = (nextByte & 0XFF) >>> (8 - bitShift);
         bytesArray[i] = (byte) (leftSide | rightSide);
@@ -639,46 +616,44 @@ public class MutableBytes extends Bytes {
   }
 
   /**
-   * Left pad these mutable values with zero bytes up to the specified size. Resulting bytes are
-   * guaranteed to have at least {@code size} bytes in length but not necessarily that exact amount.
-   * If length already exceeds {@code size} then bytes are not modified.
+   * Left pad these mutable values with zero bytes up to the specified length. Resulting bytes are
+   * guaranteed to have at least {@code length} bytes in length but not necessarily that exact
+   * amount. If length already exceeds {@code length} then bytes are not modified.
    *
-   * @param size The new size of the bytes.
-   * @throws IllegalArgumentException if {@code size} is negative.
+   * @param length The new length of the bytes.
+   * @throws IllegalArgumentException if {@code length} is negative.
    * @return This mutable bytes instance.
    */
-  public MutableBytes leftPad(int size) {
-    checkArgument(size >= 0, "Invalid negative size");
-    if (size <= length) {
+  public MutableBytes leftPad(int length) {
+    checkArgument(length >= 0, "Invalid negative length");
+    if (length <= size) {
       return this;
     }
-    byte[] newBytesArray = new byte[size];
-    System.arraycopy(bytesArray, offset, newBytesArray, size - length, length);
+    byte[] newBytesArray = new byte[length];
+    System.arraycopy(bytesArray, 0, newBytesArray, length - size, size);
     bytesArray = newBytesArray;
-    offset = 0;
-    length = size;
+    size = length;
     return this;
   }
 
   /**
-   * Right pad these mutable values with zero bytes up to the specified size. Resulting bytes are
-   * guaranteed to have at least {@code size} bytes in length but not necessarily that exact amount.
-   * If length already exceeds {@code size} then bytes are not modified.
+   * Right pad these mutable values with zero bytes up to the specified length. Resulting bytes are
+   * guaranteed to have at least {@code length} bytes in length but not necessarily that exact
+   * amount. If length already exceeds {@code length} then bytes are not modified.
    *
-   * @param size The new size of the bytes.
-   * @throws IllegalArgumentException if {@code size} is negative.
+   * @param length The new length of the bytes.
+   * @throws IllegalArgumentException if {@code length} is negative.
    * @return This mutable bytes instance.
    */
-  public MutableBytes rightPad(int size) {
-    checkArgument(size >= 0, "Invalid negative size");
-    if (size <= length) {
+  public MutableBytes rightPad(int length) {
+    checkArgument(length >= 0, "Invalid negative length");
+    if (length <= size) {
       return this;
     }
-    byte[] newBytesArray = new byte[size];
-    System.arraycopy(bytesArray, offset, newBytesArray, 0, length);
+    byte[] newBytesArray = new byte[length];
+    System.arraycopy(bytesArray, 0, newBytesArray, 0, size);
     bytesArray = newBytesArray;
-    offset = 0;
-    length = size;
+    size = length;
     return this;
   }
 
@@ -686,18 +661,18 @@ public class MutableBytes extends Bytes {
   public Bytes slice(int i, int length) {
     checkArgument(length >= 0, "Invalid negative length");
     if (bytesArray.length > 0) {
-      checkElementIndex(offset + i, bytesArray.length);
+      checkElementIndex(i, bytesArray.length);
     }
-    checkLength(bytesArray.length, offset + i, length);
-    if (length == this.length) {
+    checkLength(bytesArray.length, i, length);
+    if (length == size) {
       return this;
     }
-    return new ArrayWrappingBytes(this.bytesArray, offset + i, length);
+    return new ArrayWrappingBytes(this.bytesArray, i, length);
   }
 
   @Override
   public MutableBytes mutableCopy() {
-    return new MutableBytes(bytesArray, offset, length);
+    return new MutableBytes(bytesArray);
   }
 
   @Override
@@ -709,25 +684,15 @@ public class MutableBytes extends Bytes {
     return toArrayUnsafe();
   }
 
-  /**
-   * Provides the number of bytes this value represents.
-   *
-   * @return The number of bytes this value represents.
-   */
-  @Override
-  public int size() {
-    return length;
-  }
-
   @Override
   public byte get(int i) {
-    return bytesArray[offset + i];
+    return bytesArray[i];
   }
 
   @Override
   public int hashCode() {
     int result = 1;
-    for (int i = offset; i < length; i++) {
+    for (int i = 0; i < size; i++) {
       result = 31 * result + bytesArray[i];
     }
     return result;
@@ -742,26 +707,17 @@ public class MutableBytes extends Bytes {
       return false;
     }
 
-    if (this.length != other.size()) {
+    if (this.size != other.size()) {
       return false;
     }
 
-    for (int i = 0; i < length; i++) {
-      if (bytesArray[i + offset] != other.get(i)) {
+    for (int i = 0; i < size; i++) {
+      if (bytesArray[i] != other.get(i)) {
         return false;
       }
     }
 
     return true;
-  }
-
-  @Override
-  protected int computeHashcode() {
-    int result = 1;
-    for (int i = 0; i < size(); i++) {
-      result = 31 * result + bytesArray[i + offset];
-    }
-    return result;
   }
 
   /**

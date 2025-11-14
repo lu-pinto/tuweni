@@ -145,4 +145,37 @@ class ConcatenatedBytesTest {
     inOrder.verify(digest).update(value2.toArrayUnsafe(), 0, 4);
     inOrder.verify(digest).update(value3.toArrayUnsafe(), 0, 4);
   }
+
+  @Test
+  void and() {
+    Bytes part1 = Bytes.of(0xaa, 0xaa);
+    Bytes part2 = Bytes.of(0xbb, 0xbb);
+    Bytes expected = Bytes.fromHexString("0x000000000000aaaabbbb");
+
+    Bytes concat = ConcatenatedBytes.create(part1, part2);
+    MutableBytes mutableBytes = MutableBytes.fromHexString("0xffffffffffffffffffff");
+    assertThat(mutableBytes.and(concat)).isEqualTo(expected);
+  }
+
+  @Test
+  void or() {
+    Bytes part1 = Bytes.of(0xaa, 0xaa);
+    Bytes part2 = Bytes.of(0xbb, 0xbb);
+    Bytes expected = Bytes.fromHexString("0xffffffffffffffffbbbb");
+
+    Bytes concat = ConcatenatedBytes.create(part1, part2);
+    MutableBytes mutableBytes = MutableBytes.fromHexString("0xffffffffffffffff0000");
+    assertThat(mutableBytes.or(concat)).isEqualTo(expected);
+  }
+
+  @Test
+  void xor() {
+    Bytes part1 = Bytes.of(0xaa, 0xaa);
+    Bytes part2 = Bytes.of(0xbb, 0xbb);
+    Bytes expected = Bytes.fromHexString("0xffffffffffff55554444");
+
+    Bytes concat = ConcatenatedBytes.create(part1, part2);
+    MutableBytes mutableBytes = MutableBytes.fromHexString("0xffffffffffffffffffff");
+    assertThat(mutableBytes.xor(concat)).isEqualTo(expected);
+  }
 }

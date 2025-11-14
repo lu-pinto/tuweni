@@ -39,7 +39,7 @@ public abstract class Bytes implements Comparable<Bytes> {
   public static Bytes EMPTY = wrap(new byte[0]);
 
   protected Integer hashCode;
-  private int size;
+  protected int size;
 
   protected Bytes(final int size) {
     this.size = size;
@@ -149,7 +149,7 @@ public abstract class Bytes implements Comparable<Bytes> {
     }
     checkArgument(size >= 0, "Invalid negative length");
     int bufferLength = buffer.length();
-    checkElementIndex(offset, bufferLength + 1);
+    checkElementIndex(offset, bufferLength);
     checkLength(bufferLength, offset, size);
     return new BufferWrappingBytes(buffer, offset, size);
   }
@@ -191,7 +191,7 @@ public abstract class Bytes implements Comparable<Bytes> {
     }
     checkArgument(size >= 0, "Invalid negative length");
     int bufferLength = byteBuf.capacity();
-    checkElementIndex(offset, bufferLength + 1);
+    checkElementIndex(offset, bufferLength);
     checkLength(bufferLength, offset, size);
 
     return new ByteBufWrappingBytes(byteBuf, offset, size);

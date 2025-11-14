@@ -4,6 +4,7 @@ package org.apache.tuweni.v2.bytes;
 
 import static org.apache.tuweni.v2.bytes.Utils.checkElementIndex;
 import static org.apache.tuweni.v2.bytes.Utils.checkLength;
+import static org.apache.tuweni.v2.bytes.Utils.checkNotNull;
 
 import java.security.MessageDigest;
 import java.util.List;
@@ -18,6 +19,7 @@ final class ConcatenatedBytes extends Bytes {
   }
 
   static Bytes create(Bytes... values) {
+    checkNotNull(values);
     if (values.length == 0) {
       return EMPTY;
     }
@@ -29,16 +31,18 @@ final class ConcatenatedBytes extends Bytes {
     int totalSize = 0;
 
     for (Bytes value : values) {
-      int size = (value == null ? 0 : value.size());
+      if (value == null) {
+        continue;
+      }
       try {
-        totalSize = Math.addExact(totalSize, size);
+        totalSize = Math.addExact(totalSize, value.size());
       } catch (ArithmeticException e) {
         throw new IllegalArgumentException(
             "Combined length of values is too long (> Integer.MAX_VALUE)");
       }
       if (value instanceof ConcatenatedBytes concatenatedBytes) {
         count += concatenatedBytes.values.length;
-      } else if (size != 0) {
+      } else if (!value.isEmpty()) {
         count += 1;
       }
     }
@@ -206,7 +210,7 @@ final class ConcatenatedBytes extends Bytes {
     for (Bytes value : values) {
       value.and(bytesArray, resultOffset, value.size());
       resultOffset += value.size();
-      if (resultOffset >= length) {
+      if (resultOffset >= offset + length) {
         return;
       }
     }
@@ -218,7 +222,7 @@ final class ConcatenatedBytes extends Bytes {
     for (Bytes value : values) {
       value.or(bytesArray, resultOffset, value.size());
       resultOffset += value.size();
-      if (resultOffset >= length) {
+      if (resultOffset >= offset + length) {
         return;
       }
     }
@@ -230,7 +234,7 @@ final class ConcatenatedBytes extends Bytes {
     for (Bytes value : values) {
       value.xor(bytesArray, resultOffset, value.size());
       resultOffset += value.size();
-      if (resultOffset >= length) {
+      if (resultOffset >= offset + length) {
         return;
       }
     }

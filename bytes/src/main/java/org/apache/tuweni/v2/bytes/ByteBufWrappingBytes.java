@@ -27,11 +27,6 @@ class ByteBufWrappingBytes extends Bytes {
   }
 
   @Override
-  public int size() {
-    return byteBuf.capacity();
-  }
-
-  @Override
   public byte get(int i) {
     return byteBuf.getByte(i);
   }

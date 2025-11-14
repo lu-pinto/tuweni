@@ -2,6 +2,10 @@
 // SPDX-License-Identifier: Apache-2.0
 package org.apache.tuweni.v2.bytes;
 
+import static org.apache.tuweni.v2.bytes.Utils.checkArgument;
+import static org.apache.tuweni.v2.bytes.Utils.checkElementIndex;
+import static org.apache.tuweni.v2.bytes.Utils.checkLength;
+
 import java.util.Arrays;
 
 /**
@@ -23,7 +27,12 @@ class ConstantBytesValue extends Bytes {
   }
 
   @Override
-  public Bytes slice(int i, int length) {
+  public Bytes slice(int offset, int length) {
+    checkArgument(length >= 0, "Invalid negative length");
+    if (size() > 0) {
+      checkElementIndex(offset, size());
+    }
+    checkLength(size(), offset, length);
     if (length == size()) {
       return this;
     }

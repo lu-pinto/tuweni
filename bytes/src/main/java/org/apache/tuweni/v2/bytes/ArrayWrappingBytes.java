@@ -27,6 +27,7 @@ class ArrayWrappingBytes extends Bytes {
   public byte get(int i) {
     // Check bounds because while the array access would throw, the error message would be confusing
     // for the caller.
+    checkElementIndex(offset + i, bytes.length);
     checkElementIndex(i, size());
     return bytes[offset + i];
   }

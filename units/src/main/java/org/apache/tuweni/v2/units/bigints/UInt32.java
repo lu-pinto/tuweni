@@ -323,11 +323,11 @@ public final class UInt32 extends Bytes {
 
   @Override
   public int computeHashcode() {
-    return Long.hashCode(this.value);
+    return Integer.hashCode(this.value);
   }
 
   public int compareTo(UInt32 other) {
-    return Long.compareUnsigned(this.value, other.value);
+    return Integer.compareUnsigned(this.value, other.value);
   }
 
   @Override
@@ -409,7 +409,7 @@ public final class UInt32 extends Bytes {
 
   private static int log2(int v) {
     assert v > 0;
-    return 63 - Long.numberOfLeadingZeros(v);
+    return 31 - Integer.numberOfLeadingZeros(v);
   }
 
   /**

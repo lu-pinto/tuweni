@@ -3,6 +3,7 @@
 package org.apache.tuweni.v2.bytes;
 
 import static org.apache.tuweni.v2.bytes.Utils.checkArgument;
+import static org.apache.tuweni.v2.bytes.Utils.checkNotNull;
 
 final class BytesValues {
   private BytesValues() {}
@@ -16,6 +17,7 @@ final class BytesValues {
   }
 
   static byte[] fromRawHexString(CharSequence str, int destSize, boolean lenient) {
+    checkNotNull(str);
     int len = str.length();
     CharSequence hex = str;
     if (len >= 2 && str.charAt(0) == '0' && str.charAt(1) == 'x') {
