@@ -2,6 +2,7 @@
 // SPDX-License-Identifier: Apache-2.0
 package org.apache.tuweni.bytes;
 
+import static java.nio.ByteOrder.BIG_ENDIAN;
 import static java.nio.ByteOrder.LITTLE_ENDIAN;
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -723,5 +724,51 @@ class BytesTest extends CommonBytesTests {
   void testTrimTrailingZeros() {
     Bytes b = Bytes.fromHexString("0x000000f300567800");
     assertEquals(Bytes.fromHexString("0x000000f3005678"), b.trimTrailingZeros());
+  }
+
+  @Test
+  void toLongTest() {
+    final Bytes sandwich = Bytes.fromHexString("0x000000000000001100000000000000");
+    final Bytes leadingZeros = Bytes.fromHexString("0x0000000000000011");
+    final Bytes trailingZeros = Bytes.fromHexString("0x1100000000000000");
+    final Bytes noZeros = Bytes.fromHexString("0x11");
+    assertEquals(1224979098644774912L, sandwich.toLong());
+    assertEquals(17L, leadingZeros.toLong());
+    assertEquals(1224979098644774912L, trailingZeros.toLong());
+    assertEquals(17L, noZeros.toLong());
+    assertEquals(1224979098644774912L, sandwich.toLong(LITTLE_ENDIAN));
+    assertEquals(1224979098644774912L, leadingZeros.toLong(LITTLE_ENDIAN));
+    assertEquals(17L, trailingZeros.toLong(LITTLE_ENDIAN));
+    assertEquals(17L, noZeros.toLong(LITTLE_ENDIAN));
+    assertEquals(9890257989415474L, Bytes.fromHexString("0x0023232322323232").toLong(BIG_ENDIAN));
+  }
+
+  @Test
+  void toIntTest() {
+    final Bytes sandwich = Bytes.fromHexString("0x00000011000000");
+    final Bytes leadingZeros = Bytes.fromHexString("0x00000011");
+    final Bytes trailingZeros = Bytes.fromHexString("0x11000000");
+    final Bytes noZeros = Bytes.fromHexString("0x11");
+    assertEquals(285212672, sandwich.toInt());
+    assertEquals(17, leadingZeros.toInt());
+    assertEquals(285212672, trailingZeros.toInt());
+    assertEquals(17, noZeros.toInt());
+    assertEquals(285212672, sandwich.toInt(LITTLE_ENDIAN));
+    assertEquals(285212672, leadingZeros.toInt(LITTLE_ENDIAN));
+    assertEquals(17, trailingZeros.toInt(LITTLE_ENDIAN));
+    assertEquals(17, noZeros.toInt(LITTLE_ENDIAN));
+  }
+
+  @Test
+  void trimmedSizeTest() {
+    final Bytes zeros = Bytes.fromHexString("0x0000000000000000");
+    assertEquals(zeros.trimmedSize(), zeros.trimLeadingZeros().size());
+    assertEquals(zeros.trimmedSize(LITTLE_ENDIAN), zeros.trimTrailingZeros().size());
+    final Bytes sandwich = Bytes.fromHexString("0x00000011000000");
+    assertEquals(sandwich.trimmedSize(), sandwich.trimLeadingZeros().size());
+    assertEquals(sandwich.trimmedSize(LITTLE_ENDIAN), sandwich.trimTrailingZeros().size());
+    final Bytes noTrim = Bytes.fromHexString("0x11");
+    assertEquals(noTrim.trimmedSize(), noTrim.trimLeadingZeros().size());
+    assertEquals(noTrim.trimmedSize(LITTLE_ENDIAN), noTrim.trimTrailingZeros().size());
   }
 }
