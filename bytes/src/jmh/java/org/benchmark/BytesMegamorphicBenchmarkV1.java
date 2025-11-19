@@ -18,6 +18,7 @@ import org.openjdk.jmh.annotations.Scope;
 import org.openjdk.jmh.annotations.Setup;
 import org.openjdk.jmh.annotations.State;
 import org.openjdk.jmh.annotations.Warmup;
+import org.openjdk.jmh.infra.Blackhole;
 
 @Warmup(iterations = 5, time = 1, timeUnit = TimeUnit.SECONDS)
 @Measurement(iterations = 10, time = 1, timeUnit = TimeUnit.SECONDS)
@@ -37,12 +38,12 @@ public class BytesMegamorphicBenchmarkV1 {
   public void setup() {
     bytesV1 = new Bytes[N * FACTOR];
     for (int i = 0; i < N * FACTOR; i += N) {
-      bytesV1[i] = Bytes.wrap(getBytes(32));
-      bytesV1[i + 1] = "mega".equals(mode) ? Bytes.wrap(getBytes(48)) : Bytes.wrap(getBytes(32));
+      bytesV1[i] = "mega".equals(mode) ? Bytes.wrap(getBytes(32)) : Bytes.wrap(getBytes(1024));
+      bytesV1[i + 1] = "mega".equals(mode) ? Bytes.wrap(getBytes(48)) : Bytes.wrap(getBytes(1024));
       bytesV1[i + 2] =
-          "mega".equals(mode) ? Bytes.repeat((byte) 0x09, 16) : Bytes.wrap(getBytes(32));
+          "mega".equals(mode) ? Bytes.repeat((byte) 0x09, 16) : Bytes.wrap(getBytes(1024));
       bytesV1[i + 3] =
-          "mega".equals(mode) ? Bytes.wrap(bytesV1[i], bytesV1[i + 1]) : Bytes.wrap(getBytes(32));
+          "mega".equals(mode) ? Bytes.wrap(bytesV1[i], bytesV1[i + 1]) : Bytes.wrap(getBytes(1024));
     }
   }
 
@@ -54,9 +55,18 @@ public class BytesMegamorphicBenchmarkV1 {
 
   @Benchmark
   @OperationsPerInvocation(N * FACTOR)
-  public void test() {
+  public void slice() {
     for (Bytes b : bytesV1) {
       b.slice(1);
+    }
+  }
+
+  @Benchmark
+  @OperationsPerInvocation(N * FACTOR)
+  public void toHex(Blackhole bh) {
+    assert !mode.equals("mega");
+    for (Bytes b : bytesV1) {
+      bh.consume(b.toHexString());
     }
   }
 }

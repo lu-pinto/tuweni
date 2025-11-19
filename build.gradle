@@ -150,7 +150,7 @@ subprojects {
         profilers = ['async:libPath=' + asyncProfiler + ';' + asyncProfilerOptions]
       }
       duplicateClassesStrategy = DuplicatesStrategy.WARN
-      jvmArgs = ['-XX:+EnableDynamicAgentLoading']
+      jvmArgs = ['-XX:+EnableDynamicAgentLoading', '-ea']
     }
 
     dependencies {
