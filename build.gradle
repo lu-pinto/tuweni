@@ -151,6 +151,7 @@ subprojects {
       }
       duplicateClassesStrategy = DuplicatesStrategy.WARN
       jvmArgs = ['-XX:+EnableDynamicAgentLoading', '-ea']
+			//, '-agentlib:jdwp=transport=dt_socket,server=y,suspend=y,address=*:5005']
     }
 
     dependencies {

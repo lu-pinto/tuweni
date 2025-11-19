@@ -28,13 +28,14 @@ public class ByteBufferBenchmark {
     private static final int FACTOR = 1_000;
     private static final Random RANDOM = new Random(23L);
     ByteBuffer[] byteBuffers;
+    ByteBuffer[] byteBuffersDup;
     private int index;
     private static final int MAX_INDEX = 10;
 
     public enum MODE {
-        MONO_DIRECT,
-        MONO_NON_DIRECT_FULL_ARRAY_ACCESS,
-        MONO_NON_DIRECT_ARRAY_INDEXING;
+        MONO_OFF_HEAP,
+        MONO_ON_HEAP_FULL_ARRAY_ACCESS,
+        MONO_ON_HEAP_ARRAY_INDEXING;
     }
 
     @Param
@@ -43,32 +44,44 @@ public class ByteBufferBenchmark {
     @Setup
     public void setup() {
         byteBuffers = new ByteBuffer[N * FACTOR];
+        byteBuffersDup = new ByteBuffer[N * FACTOR];
         for (int i = 0; i < N * FACTOR; i += N) {
-            switch (mode) {
-                case MONO_DIRECT -> {
-                    byteBuffers[i] = createDirectByteBuffer(1024);
-                    byteBuffers[i + 1] = createDirectByteBuffer(1024);
-                    byteBuffers[i + 2] = createDirectByteBuffer(1024);
-                    byteBuffers[i + 3] = createDirectByteBuffer(1024);
-                }
-                case MONO_NON_DIRECT_FULL_ARRAY_ACCESS,
-                     MONO_NON_DIRECT_ARRAY_INDEXING -> {
-                    byteBuffers[i] = createNonDirectByteBuffer(1024);
-                    byteBuffers[i + 1] = createNonDirectByteBuffer(1024);
-                    byteBuffers[i + 2] = createNonDirectByteBuffer(1024);
-                    byteBuffers[i + 3] = createNonDirectByteBuffer(1024);
-                }
-            }
+            byteBuffers[i] = createByteBuffer(1024);
+            byteBuffersDup[i] = clone(byteBuffers[i]);
+            byteBuffers[i + 1] = createByteBuffer(1024);
+            byteBuffersDup[i + 1] = clone(byteBuffers[i + 1]);
+            byteBuffers[i + 2] = createByteBuffer(1024);
+            byteBuffersDup[i + 2] = clone(byteBuffers[i + 2]);
+            byteBuffers[i + 3] = createByteBuffer(1024);
+            byteBuffersDup[i + 3] = clone(byteBuffers[i + 3]);
         }
     }
 
-    private static ByteBuffer createNonDirectByteBuffer(final int size) {
-        return ByteBuffer.wrap(getBytes(size)).position(0);
+    private ByteBuffer clone(final ByteBuffer byteBuffer) {
+        return switch (mode) {
+            case MONO_OFF_HEAP -> {
+                final byte[] newArray = new byte[byteBuffer.limit()];
+                byteBuffer.get(newArray).position(0);
+                ByteBuffer buf = ByteBuffer.allocateDirect(newArray.length);
+                yield buf.put(newArray).position(0);
+            }
+            case MONO_ON_HEAP_ARRAY_INDEXING, MONO_ON_HEAP_FULL_ARRAY_ACCESS -> {
+                final byte[] newArray = new byte[byteBuffer.limit()];
+                byteBuffer.get(newArray).position(0);
+                yield ByteBuffer.wrap(newArray).position(0);
+            }
+        };
     }
 
-    private static ByteBuffer createDirectByteBuffer(final int size) {
-        ByteBuffer buf = ByteBuffer.allocateDirect(size);
-        return buf.put(getBytes(size)).position(0);
+    private ByteBuffer createByteBuffer(final int size) {
+        return switch (mode) {
+            case MONO_OFF_HEAP -> {
+                ByteBuffer buf = ByteBuffer.allocateDirect(size);
+                yield buf.put(getBytes(size)).position(0);
+
+            }
+            case MONO_ON_HEAP_ARRAY_INDEXING, MONO_ON_HEAP_FULL_ARRAY_ACCESS -> ByteBuffer.wrap(getBytes(size)).position(0);
+        };
     }
 
     private static byte[] getBytes(final int size) {
@@ -80,9 +93,9 @@ public class ByteBufferBenchmark {
     @Benchmark
     @OperationsPerInvocation(N * FACTOR)
     public void slice() {
-        assert mode != MODE.MONO_NON_DIRECT_ARRAY_INDEXING;
+        assert mode != MODE.MONO_ON_HEAP_ARRAY_INDEXING;
         for (ByteBuffer b : byteBuffers) {
-            b.slice(index++, b.limit() - 1);
+            b.slice(index++, index * 2);
             index %= MAX_INDEX;
         }
     }
@@ -98,17 +111,26 @@ public class ByteBufferBenchmark {
     @Benchmark
     @OperationsPerInvocation(N * FACTOR)
     public void getInt(Blackhole bh) {
-        assert mode != MODE.MONO_NON_DIRECT_ARRAY_INDEXING;
+        assert mode != MODE.MONO_ON_HEAP_ARRAY_INDEXING;
         for (ByteBuffer b : byteBuffers) {
             bh.consume(b.getInt(index++));
             index %= MAX_INDEX;
         }
     }
 
+    @Benchmark
+    @OperationsPerInvocation(N * FACTOR)
+    public void equals(Blackhole bh) {
+        assert mode != MODE.MONO_ON_HEAP_ARRAY_INDEXING;
+        for (int i = 0; i < byteBuffers.length; i++) {
+            bh.consume(byteBuffers[i].equals(byteBuffersDup[i]));
+        }
+    }
+
     private String toHex(ByteBuffer buf) {
         return switch (mode) {
-            case MONO_DIRECT, MONO_NON_DIRECT_ARRAY_INDEXING -> toHexFromBuffer(buf);
-            case MONO_NON_DIRECT_FULL_ARRAY_ACCESS -> toHexFromArray(buf);
+            case MONO_OFF_HEAP, MONO_ON_HEAP_ARRAY_INDEXING -> toHexFromBuffer(buf);
+            case MONO_ON_HEAP_FULL_ARRAY_ACCESS -> toHexFromArray(buf);
         };
     }
 

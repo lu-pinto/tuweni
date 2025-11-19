@@ -30,6 +30,7 @@ public class BytesMegamorphicBenchmarkV2 {
   private static final int FACTOR = 1_000;
   private static final Random RANDOM = new Random(23L);
   Bytes[] bytesV2;
+  Bytes[] bytesV2Dup;
   private int index;
   private static final int MAX_INDEX = 10;
 
@@ -39,13 +40,18 @@ public class BytesMegamorphicBenchmarkV2 {
   @Setup
   public void setup() {
     bytesV2 = new Bytes[N * FACTOR];
+    bytesV2Dup = new Bytes[N * FACTOR];
     for (int i = 0; i < N * FACTOR; i += N) {
       bytesV2[i] = "mega".equals(mode) ? Bytes.wrap(getBytes(32)) : Bytes.wrap(getBytes(1024));
+      bytesV2Dup[i] = Bytes.wrap(bytesV2[i].toArrayUnsafe());
       bytesV2[i + 1] = "mega".equals(mode) ? Bytes.wrap(getBytes(48)) : Bytes.wrap(getBytes(1024));
+      bytesV2Dup[i + 1] = Bytes.wrap(bytesV2[i + 1].toArrayUnsafe());
       bytesV2[i + 2] =
           "mega".equals(mode) ? Bytes.repeat((byte) 0x09, 16) : Bytes.wrap(getBytes(1024));
+      bytesV2Dup[i + 2] = Bytes.wrap(bytesV2[i + 2].toArrayUnsafe());
       bytesV2[i + 3] =
           "mega".equals(mode) ? Bytes.wrap(bytesV2[i], bytesV2[i + 1]) : Bytes.wrap(getBytes(1024));
+      bytesV2Dup[i + 3] = Bytes.wrap(bytesV2[i + 3].toArrayUnsafe());
     }
   }
 
@@ -59,7 +65,7 @@ public class BytesMegamorphicBenchmarkV2 {
   @OperationsPerInvocation(N * FACTOR)
   public void slice() {
     for (Bytes b : bytesV2) {
-      b.slice(index++);
+      b.slice(index++, index * 2);
       index %= MAX_INDEX;
     }
   }
@@ -80,6 +86,14 @@ public class BytesMegamorphicBenchmarkV2 {
     for (Bytes b : bytesV2) {
       bh.consume(b.getInt(index++));
       index %= MAX_INDEX;
+    }
+  }
+
+  @Benchmark
+  @OperationsPerInvocation(N * FACTOR)
+  public void equals(Blackhole bh) {
+    for (int i = 0; i < bytesV2.length; i++) {
+      bh.consume(bytesV2[i].equals(bytesV2Dup[i]));
     }
   }
 }
