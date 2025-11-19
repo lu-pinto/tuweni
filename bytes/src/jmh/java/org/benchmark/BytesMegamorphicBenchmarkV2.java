@@ -30,6 +30,8 @@ public class BytesMegamorphicBenchmarkV2 {
   private static final int FACTOR = 1_000;
   private static final Random RANDOM = new Random(23L);
   Bytes[] bytesV2;
+  private int index;
+  private static final int MAX_INDEX = 10;
 
   @Param({"mono", "mega"})
   private String mode;
@@ -57,7 +59,8 @@ public class BytesMegamorphicBenchmarkV2 {
   @OperationsPerInvocation(N * FACTOR)
   public void slice() {
     for (Bytes b : bytesV2) {
-      b.slice(1);
+      b.slice(index++);
+      index %= MAX_INDEX;
     }
   }
 
@@ -67,6 +70,16 @@ public class BytesMegamorphicBenchmarkV2 {
     assert !mode.equals("mega");
     for (Bytes b : bytesV2) {
       bh.consume(b.toHexString());
+    }
+  }
+
+  @Benchmark
+  @OperationsPerInvocation(N * FACTOR)
+  public void getInt(Blackhole bh) {
+    assert !mode.equals("mega");
+    for (Bytes b : bytesV2) {
+      bh.consume(b.getInt(index++));
+      index %= MAX_INDEX;
     }
   }
 }

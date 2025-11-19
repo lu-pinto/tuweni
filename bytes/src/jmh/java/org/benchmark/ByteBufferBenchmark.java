@@ -28,6 +28,8 @@ public class ByteBufferBenchmark {
     private static final int FACTOR = 1_000;
     private static final Random RANDOM = new Random(23L);
     ByteBuffer[] byteBuffers;
+    private int index;
+    private static final int MAX_INDEX = 10;
 
     public enum MODE {
         MONO_DIRECT,
@@ -61,7 +63,7 @@ public class ByteBufferBenchmark {
     }
 
     private static ByteBuffer createNonDirectByteBuffer(final int size) {
-        return ByteBuffer.wrap(getBytes(size));
+        return ByteBuffer.wrap(getBytes(size)).position(0);
     }
 
     private static ByteBuffer createDirectByteBuffer(final int size) {
@@ -80,7 +82,8 @@ public class ByteBufferBenchmark {
     public void slice() {
         assert mode != MODE.MONO_NON_DIRECT_ARRAY_INDEXING;
         for (ByteBuffer b : byteBuffers) {
-            b.slice(1, b.limit() - 1);
+            b.slice(index++, b.limit() - 1);
+            index %= MAX_INDEX;
         }
     }
 
@@ -89,6 +92,16 @@ public class ByteBufferBenchmark {
     public void toHex(Blackhole bh) {
         for (ByteBuffer b : byteBuffers) {
             bh.consume(toHex(b));
+        }
+    }
+
+    @Benchmark
+    @OperationsPerInvocation(N * FACTOR)
+    public void getInt(Blackhole bh) {
+        assert mode != MODE.MONO_NON_DIRECT_ARRAY_INDEXING;
+        for (ByteBuffer b : byteBuffers) {
+            bh.consume(b.getInt(index++));
+            index %= MAX_INDEX;
         }
     }
 
